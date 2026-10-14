@@ -19,7 +19,10 @@ export default defineConfig({
     launchOptions: { executablePath },
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, launchOptions: { executablePath } } },
+    {
+      name: 'desktop',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, launchOptions: { executablePath } },
+    },
     {
       name: 'mobile',
       use: { ...devices['Pixel 7'], viewport: { width: 375, height: 812 }, launchOptions: { executablePath } },

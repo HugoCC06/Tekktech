@@ -1,0 +1,32 @@
+# Optional: rebuilds the live site once a day so articles with a future
+# publication date go live automatically on that date.
+#
+# Setup (see docs/DEPLOYMENT.md > "Scheduled publishing"):
+#   1. Cloudflare Pages > your project > Settings > Builds > Deploy hooks:
+#      create a hook for the production branch and copy its URL.
+#   2. GitHub repository > Settings > Secrets and variables > Actions:
+#      add a secret named CLOUDFLARE_DEPLOY_HOOK with that URL.
+# Without the secret, this workflow does nothing.
+name: Scheduled rebuild
+
+on:
+  schedule:
+    - cron: '7 5 * * *' # 05:07 UTC daily
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger a production deployment
+        env:
+          DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "CLOUDFLARE_DEPLOY_HOOK is not set; skipping."
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST "$DEPLOY_HOOK" > /dev/null
+          echo "Production rebuild triggered."

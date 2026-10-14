@@ -27,6 +27,9 @@ export default defineConfig({
   trailingSlash: 'always',
   build: {
     format: 'directory',
+    // Inline CSS (≈7 kB gzipped per page) to remove render-blocking requests:
+    // most readers arrive on a single article from search or social.
+    inlineStylesheets: 'always',
   },
   markdown: {
     processor: unified({
