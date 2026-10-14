@@ -41,16 +41,16 @@ This README is the owner's guide. It assumes no web-development experience. More
 
 ## 1. What the website is built with
 
-| Part              | Technology                                         | Why                                                                                                                                      |
-| ----------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Website           | [Astro](https://astro.build) 7                     | Generates fast, plain HTML pages. No server or database to maintain.                                                                     |
-| Language          | TypeScript, Astro components, standard CSS         | Small, readable, no heavy frameworks.                                                                                                    |
-| Articles          | Markdown files in `src/content/articles/`          | Portable plain text with version history.                                                                                                |
-| Dashboard         | [Decap CMS](https://decapcms.org) 3 at `/admin/`   | Free, open-source, Git-based: every save is a Git commit.                                                                                |
-| Dashboard sign-in | A small GitHub OAuth function (`functions/oauth/`) | Keeps the GitHub secret on the server, and only lets you in.                                                                             |
-| Search            | [Pagefind](https://pagefind.app)                   | A static search index built with the site. No paid service.                                                                              |
-| Hosting           | Cloudflare Pages (recommended)                     | Free tier allows commercial use, unlimited bandwidth, custom domains. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#hosting-decision). |
-| Source control    | GitHub                                             | History, backups, and the store for all content.                                                                                         |
+| Part              | Technology                                                                | Why                                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Website           | [Astro](https://astro.build) 7                                            | Generates fast, plain HTML pages. No server or database to maintain.                                                                     |
+| Language          | TypeScript, Astro components, standard CSS                                | Small, readable, no heavy frameworks.                                                                                                    |
+| Articles          | Markdown files in `src/content/articles/`                                 | Portable plain text with version history.                                                                                                |
+| Dashboard         | [Decap CMS](https://decapcms.org) 3 at `/admin/`                          | Free, open-source, Git-based: every save is a Git commit.                                                                                |
+| Dashboard sign-in | A small GitHub OAuth function (`functions/oauth/`)                        | Keeps the GitHub secret on the server, and only lets you in.                                                                             |
+| Search            | [Pagefind](https://pagefind.app)                                          | A static search index built with the site. No paid service.                                                                              |
+| Hosting           | Cloudflare Pages (recommended), or GitHub Pages via the included workflow | Free tier allows commercial use, unlimited bandwidth, custom domains. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#hosting-decision). |
+| Source control    | GitHub                                                                    | History, backups, and the store for all content.                                                                                         |
 
 There is no database and no paid service. The ongoing cost is the domain name.
 
