@@ -1,0 +1,90 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# TEKKTECH NEW ARTICLE TEMPLATE
+# 1. Copy this whole file.
+# 2. On GitHub, open src/content/articles/ → Add file → Create new file.
+# 3. Name it after your slug, e.g. best-budget-keyboards.md, and paste.
+# 4. Fill in the fields below and write the article under the second ---.
+# 5. Click "Commit changes…" and commit to main. The site rebuilds in ~2 min.
+# Lines starting with # are notes for you; they never appear on the site.
+# Keep the quotes around text that contains a colon (:).
+# ─────────────────────────────────────────────────────────────────────────────
+
+title: Understanding Ethereum ETH
+
+# Becomes the web address: /<category>/<slug>/
+# lowercase letters, numbers and hyphens only. Never change it after publishing.
+slug: your-headline-here
+
+# One or two sentences shown under the headline and on article cards (20–300 characters).
+excerpt: 'A short summary that tells readers what they will learn and why it matters.'
+
+# One of: consumer-tech | gaming | crypto | productivity
+category: consumer-tech
+
+# One of: review | comparison | ranking | explainer | guide | opinion
+type: explainer
+
+# published = live after you commit   draft = saved but hidden   archived = taken down
+status: published
+
+# Publication date (YYYY-MM-DD). A future date keeps the article hidden until then.
+publishDate: 2026-10-14
+
+# Optional: when you update the article later, uncomment and set this.
+# updatedDate: 2026-10-20
+
+tags:
+  - Crypto
+
+# Put this article first on the homepage? true or false
+featured: false
+
+# ── Featured image (optional) ───────────────────────────────────────────────
+# Upload the image to src/assets/images/articles/ first (Add file → Upload files),
+# then uncomment these lines and change the file name. Keep the ../../ prefix.
+# If you leave them out, a category illustration is shown instead.
+# image: ../../assets/images/articles/your-image.webp
+# imageAlt: 'Describe what the image shows for people who cannot see it'
+# imageCaption: 'Optional caption'
+# imageCredit: 'Illustration: TekkTech'
+# imageIsAiGenerated: true
+
+# ── Sources (recommended) ───────────────────────────────────────────────────
+sources:
+  - title: 'Name of the source page'
+    url: 'https://example.com/the-page'
+    publisher: 'Who published it'
+
+# ── Only for reviews (type: review) — delete otherwise ─────────────────────
+# review:
+#   productName: 'Product name'
+#   summary: 'One- or two-sentence verdict.'
+#   handsOn: false        # true ONLY if you genuinely used the product
+#   # score: 8            # only for hands-on reviews, out of 10
+#   strengths:
+#     - 'A strength'
+#   weaknesses:
+#     - 'A weakness'
+#   bestFor: 'Who should consider it'
+#   avoidIf: 'Who should look elsewhere'
+---
+
+Write your introduction here: what the article is about and why it matters. Plain text works; use the formatting below where it helps.
+
+## A section heading
+
+Headings that start with `##` build the table of contents automatically. Use `###` for sub-sections.
+
+Write **bold**, *italic*, and [links to sources](https://example.com). For an affiliate link, add "affiliate" after the address: [Check price](https://shop.example/item "affiliate").
+
+- Bullet points
+- Look like this
+
+| Feature | Option A | Option B |
+| --- | --- | --- |
+| Price band | Lower | Higher |
+
+## The bottom line
+
+Finish with a clear conclusion.
