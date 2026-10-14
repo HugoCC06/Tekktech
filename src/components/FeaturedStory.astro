@@ -4,6 +4,7 @@ import { articlePath, getCategory, typeLabel, type Article } from '../lib/articl
 import { withBase } from '../lib/urls.ts';
 import ArticleImage from './ArticleImage.astro';
 import ArticleMeta from './ArticleMeta.astro';
+import Icon from './Icon.astro';
 
 interface Props {
   article: Article;
@@ -11,18 +12,21 @@ interface Props {
 
 const { article } = Astro.props;
 const category = getCategory(article.data.category);
+const hasImage = Boolean(article.data.image);
 ---
 
-<article class="featured">
-  <div class="featured__media">
-    <ArticleImage
-      article={article}
-      sizes="(min-width: 76rem) 760px, (min-width: 60rem) 62vw, 100vw"
-      widths={[480, 760, 1024, 1520]}
-      priority
-      decorative
-    />
-  </div>
+<article class:list={['featured', { 'featured--text': !hasImage }]}>
+  {hasImage && (
+    <div class="featured__media">
+      <ArticleImage
+        article={article}
+        sizes="(min-width: 76rem) 760px, (min-width: 60rem) 62vw, 100vw"
+        widths={[480, 760, 1024, 1520]}
+        priority
+        decorative
+      />
+    </div>
+  )}
   <div class="featured__body">
     <p class="eyebrow featured__eyebrow">
       <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
@@ -36,6 +40,11 @@ const category = getCategory(article.data.category);
     </h2>
     <p class="featured__excerpt">{article.data.excerpt}</p>
     <ArticleMeta article={article} />
+    {!hasImage && (
+      <span class="featured__cta" aria-hidden="true">
+        Read the article <Icon name="arrow-right" />
+      </span>
+    )}
   </div>
 </article>
 
@@ -110,5 +119,72 @@ const category = getCategory(article.data.category);
     color: var(--color-ink-2);
     font-size: var(--text-md);
     line-height: var(--leading-normal);
+  }
+
+  /* Typographic lead story for articles without an image */
+  .featured--text {
+    overflow: hidden;
+    padding: var(--space-10) var(--space-6);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(120% 90% at 100% 0%, rgb(36 67 214 / 0.35), transparent 60%), var(--color-ink);
+    color: #fff;
+  }
+
+  .featured--text .featured__body {
+    gap: var(--space-4);
+    max-width: 44rem;
+  }
+
+  .featured--text .featured__eyebrow,
+  .featured--text .featured__eyebrow :global(.eyebrow__muted) {
+    color: #b9c6ff;
+  }
+
+  .featured--text .featured__title {
+    font-size: var(--text-display);
+  }
+
+  .featured--text .featured__title a,
+  .featured--text:hover .featured__title a {
+    color: #fff;
+  }
+
+  .featured--text .featured__excerpt {
+    color: #c9cdd6;
+    font-size: var(--text-lg);
+  }
+
+  .featured--text :global(.article-meta) {
+    color: #a9aeb9;
+  }
+
+  .featured__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    color: #fff;
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .featured__cta :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform var(--duration) var(--ease);
+  }
+
+  .featured--text:hover .featured__cta :global(.icon) {
+    transform: translateX(3px);
+  }
+
+  .featured--text :global(.featured__title a:focus-visible::after) {
+    outline-color: #b9c6ff;
+  }
+
+  @media (min-width: 48rem) {
+    .featured--text {
+      padding: var(--space-16) var(--space-12);
+    }
   }
 </style>

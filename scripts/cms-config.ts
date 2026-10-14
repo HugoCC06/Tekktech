@@ -207,7 +207,7 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
       widget: 'image',
       required: false,
       choose_url: false,
-      hint: '16:9, at least 1600×900 px, JPG/PNG/WebP. If empty, a category illustration is used.',
+      hint: '16:9, at least 1600×900 px, JPG/PNG/WebP. Optional: without one, the article uses a text-only layout.',
     },
     {
       label: 'Image alt text',

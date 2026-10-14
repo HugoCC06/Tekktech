@@ -217,10 +217,20 @@ test.describe('article page', () => {
     await expect(region).toHaveAttribute('tabindex', '0');
   });
 
-  test('images have alt attributes and load, including the category fallback', async ({ page }) => {
+  test('articles without an image use a text layout, never an empty frame', async ({ page }) => {
     await page.goto('/productivity/choosing-digital-productivity-tools/');
-    const hero = page.locator('.article__image img');
-    await expect(hero).toHaveAttribute('src', /productivity/);
+    await expect(page.locator('.article__image')).toHaveCount(0);
+    await expect(page.locator('.article__rule')).toBeVisible();
+    await page.goto('/productivity/');
+    const card = page.locator('.card', {
+      has: page.locator('a[href="/productivity/choosing-digital-productivity-tools/"]'),
+    });
+    await expect(card).toHaveClass(/card--text/);
+    await expect(card.locator('.card__media')).toHaveCount(0);
+    await expect(page.locator('.card__media:not(:has(img))')).toHaveCount(0);
+  });
+
+  test('images have alt attributes and load', async ({ page }) => {
     await page.goto('/articles/');
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     const images = page.locator('main img');

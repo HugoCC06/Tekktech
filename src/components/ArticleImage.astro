@@ -1,10 +1,10 @@
 ---
 /**
- * Responsive article image with a category illustration as fallback, so a
- * missing featured image never produces a broken or empty frame.
+ * Responsive article image. Renders nothing when the article has no image —
+ * the surrounding components then switch to a text-only layout instead of
+ * showing an empty frame.
  */
 import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import type { Article } from '../lib/articles.ts';
 
 interface Props {
@@ -19,8 +19,6 @@ interface Props {
   decorative?: boolean;
 }
 
-const fallbacks = import.meta.glob<{ default: ImageMetadata }>('../assets/images/fallback/*.webp', { eager: true });
-
 const {
   article,
   sizes,
@@ -30,9 +28,8 @@ const {
   decorative = false,
 } = Astro.props;
 
-const fallback = fallbacks[`../assets/images/fallback/${article.data.category}.webp`]?.default;
-const src = article.data.image ?? fallback;
-const alt = decorative ? '' : article.data.image ? (article.data.imageAlt ?? '') : '';
+const src = article.data.image;
+const alt = decorative ? '' : (article.data.imageAlt ?? '');
 ---
 
 {src && (

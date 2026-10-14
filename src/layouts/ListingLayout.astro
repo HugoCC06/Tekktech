@@ -195,11 +195,16 @@ const [lead, ...rest] = articles;
   }
 
   @media (min-width: 48rem) {
-    .listing__lead :global(.card--standard) {
+    .listing__lead :global(.card--standard:not(.card--text)) {
       display: grid;
       grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
       align-items: center;
       gap: var(--space-10);
+    }
+
+    .listing__lead :global(.card--text) {
+      min-height: 0;
+      padding: var(--space-10);
     }
 
     .listing__lead :global(.card__title) {

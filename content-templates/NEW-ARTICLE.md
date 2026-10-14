@@ -43,7 +43,7 @@ featured: false
 # ── Featured image (optional) ───────────────────────────────────────────────
 # Upload the image to src/assets/images/articles/ first (Add file → Upload files),
 # then uncomment these lines and change the file name. Keep the ../../ prefix.
-# If you leave them out, a category illustration is shown instead.
+# Images are optional: without one, the article uses a clean text-only layout.
 # image: ../../assets/images/articles/your-image.webp
 # imageAlt: 'Describe what the image shows for people who cannot see it'
 # imageCaption: 'Optional caption'

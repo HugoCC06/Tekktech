@@ -1,9 +1,8 @@
 /**
  * Generates abstract placeholder illustrations for the demonstration
- * articles and the per-category fallback images.
+ * articles.
  *
  *   src/assets/images/articles/<name>.webp   (1600×900)
- *   src/assets/images/fallback/<category>.webp
  *
  * These are deliberately abstract, geometric compositions in the TekkTech
  * palette. They are placeholders: replace them with finished editorial
@@ -340,14 +339,7 @@ const articleIllustrations: { file: string; category: string; motif: Motif }[] =
   { file: 'passkeys-explained', category: 'consumer-tech', motif: 'signal' },
 ];
 
-const fallbacks: { file: string; category: string; motif: Motif }[] = [
-  { file: 'consumer-tech', category: 'consumer-tech', motif: 'devices' },
-  { file: 'gaming', category: 'gaming', motif: 'gaming' },
-  { file: 'crypto', category: 'crypto', motif: 'blocks' },
-  { file: 'productivity', category: 'productivity', motif: 'workspace' },
-];
-
-async function render(dir: string, items: typeof fallbacks) {
+async function render(dir: string, items: typeof articleIllustrations) {
   const out = resolve(root, dir);
   await mkdir(out, { recursive: true });
   for (const item of items) {
@@ -360,5 +352,4 @@ async function render(dir: string, items: typeof fallbacks) {
 }
 
 await render('src/assets/images/articles', articleIllustrations);
-await render('src/assets/images/fallback', fallbacks);
 console.log('Placeholder illustrations generated.');

@@ -157,23 +157,27 @@ const jsonLd = [
         </div>
       </header>
 
-      <figure class="article__figure">
-        <div class="article__image">
-          <ArticleImage
-            article={article}
-            sizes="(min-width: 76rem) 1088px, 100vw"
-            widths={[640, 960, 1280, 1600]}
-            priority
-          />
-        </div>
-        {data.image && (data.imageCaption || data.imageCredit || data.imageIsAiGenerated) && (
-          <figcaption class="article__caption">
-            {data.imageCaption && <span>{data.imageCaption}</span>}
-            {data.imageIsAiGenerated && <span class="article__credit">AI-generated illustration</span>}
-            {data.imageCredit && <span class="article__credit">{data.imageCredit}</span>}
-          </figcaption>
-        )}
-      </figure>
+      {data.image ? (
+        <figure class="article__figure">
+          <div class="article__image">
+            <ArticleImage
+              article={article}
+              sizes="(min-width: 76rem) 1088px, 100vw"
+              widths={[640, 960, 1280, 1600]}
+              priority
+            />
+          </div>
+          {data.image && (data.imageCaption || data.imageCredit || data.imageIsAiGenerated) && (
+            <figcaption class="article__caption">
+              {data.imageCaption && <span>{data.imageCaption}</span>}
+              {data.imageIsAiGenerated && <span class="article__credit">AI-generated illustration</span>}
+              {data.imageCredit && <span class="article__credit">{data.imageCredit}</span>}
+            </figcaption>
+          )}
+        </figure>
+      ) : (
+        <hr class="article__rule" />
+      )}
     </div>
 
     <div class="container article__layout">
@@ -323,6 +327,11 @@ const jsonLd = [
 
   .article__byline :global(.share__label) {
     display: none;
+  }
+
+  .article__rule {
+    max-width: 50rem;
+    margin: 0 auto;
   }
 
   .article__figure {

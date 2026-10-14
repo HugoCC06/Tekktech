@@ -68,7 +68,6 @@ There is no database and no paid service. The ongoing cost is the domain name.
 │   │   └── pages/              ← About, Editorial policy, legal pages
 │   ├── assets/images/
 │   │   ├── articles/           ← article images (uploaded through the dashboard)
-│   │   └── fallback/           ← category illustrations used when an article has no image
 │   ├── components/             ← reusable building blocks (header, cards, share buttons…)
 │   ├── layouts/                ← page shells
 │   ├── pages/                  ← one file per kind of URL
@@ -163,7 +162,7 @@ In the editor, use **Featured image → Choose an image → Upload**. Images are
 - Add a credit for any image you didn't make yourself, and only use images you have the right to use.
 - To replace an image, choose a different one in the same field and publish.
 
-If an article has no image, a category illustration from `src/assets/images/fallback/` is shown instead. To regenerate the placeholder artwork, run `npm run illustrations`.
+Images are optional. Articles without one use a clean text-only layout: a text card in listings, a typographic lead panel on the homepage, and no image frame on the article page.
 
 ## 10. Using the article templates
 
