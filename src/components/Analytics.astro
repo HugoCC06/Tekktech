@@ -1,0 +1,32 @@
+---
+/**
+ * Optional, privacy-conscious analytics. Renders nothing unless a provider
+ * is configured with PUBLIC_ANALYTICS_PROVIDER (see .env.example), and never
+ * on local development or preview builds. All supported providers work
+ * without cookies. Scripts are deferred so they cannot block rendering.
+ */
+import { getAnalyticsConfig } from '../lib/integrations.ts';
+
+const analytics = getAnalyticsConfig();
+---
+
+{
+  analytics.provider === 'plausible' && (
+    <script is:inline defer data-domain={analytics.domain} src="https://plausible.io/js/script.js" />
+  )
+}
+{
+  analytics.provider === 'cloudflare' && (
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={JSON.stringify({ token: analytics.token })}
+    />
+  )
+}
+{
+  analytics.provider === 'umami' && (
+    <script is:inline defer src={analytics.scriptUrl} data-website-id={analytics.websiteId} />
+  )
+}

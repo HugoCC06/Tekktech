@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Generated at build time by scripts/prepare-admin.ts
+public/admin/vendor/
+public/admin/cms-config.json
+
+# Test output
+test-results/
+playwright-report/
+coverage/
+.tmp-publishing-test/
+
+# Local secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+.dev.vars
+.wrangler/
+
+# Editors and OS files
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.log
+npm-debug.log*

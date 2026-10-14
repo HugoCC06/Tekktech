@@ -1,0 +1,190 @@
+---
+/**
+ * Table of contents generated from the article's h2/h3 headings.
+ * A native <details> element makes it collapsible on mobile without
+ * JavaScript; on wide screens it becomes a sticky sidebar that highlights
+ * the section being read.
+ */
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const items = Astro.props.headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  items.length >= 2 && (
+    <nav class="toc" aria-labelledby="toc-title" data-toc>
+      <details class="toc__details" open data-toc-details>
+        <summary class="toc__summary">
+          <span id="toc-title">In this article</span>
+        </summary>
+        <ol class="toc__list">
+          {items.map((heading) => (
+            <li class:list={['toc__item', `toc__item--h${heading.depth}`]}>
+              <a href={`#${heading.slug}`} data-toc-link={heading.slug}>
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    </nav>
+  )
+}
+
+<script>
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const details = toc?.querySelector<HTMLDetailsElement>('[data-toc-details]');
+  const wide = window.matchMedia('(min-width: 68rem)');
+
+  if (toc && details) {
+    // Collapsed by default on small screens, always open in the sidebar.
+    const syncOpen = () => {
+      details.open = wide.matches;
+    };
+    syncOpen();
+    wide.addEventListener('change', syncOpen);
+
+    toc.addEventListener('click', (event) => {
+      const link = (event.target as HTMLElement).closest('a');
+      if (link && !wide.matches) details.open = false;
+    });
+
+    const links = new Map<string, HTMLAnchorElement>();
+    toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]').forEach((link) => {
+      links.set(link.dataset.tocLink ?? '', link);
+    });
+    const headings = [...links.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((heading): heading is HTMLElement => heading !== null);
+
+    if ('IntersectionObserver' in window && headings.length) {
+      const visible = new Set<string>();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) visible.add(entry.target.id);
+            else visible.delete(entry.target.id);
+          });
+          const active = headings.find((heading) => visible.has(heading.id));
+          if (!active) return;
+          links.forEach((link, id) => {
+            if (id === active.id) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        },
+        { rootMargin: '-15% 0px -70% 0px' },
+      );
+      headings.forEach((heading) => observer.observe(heading));
+    }
+  }
+</script>
+
+<style>
+  .toc {
+    font-size: var(--text-sm);
+  }
+
+  .toc__details {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .toc__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .toc__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc__summary::after {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 1.75px solid currentColor;
+    border-bottom: 1.75px solid currentColor;
+    transform: translateY(-25%) rotate(45deg);
+    transition: transform var(--duration) var(--ease);
+  }
+
+  .toc__details[open] .toc__summary::after {
+    transform: translateY(25%) rotate(225deg);
+  }
+
+  .toc__list {
+    display: grid;
+    gap: var(--space-1);
+    padding: 0 var(--space-5) var(--space-5);
+    list-style: none;
+  }
+
+  .toc__item a {
+    display: block;
+    padding: var(--space-1) 0 var(--space-1) var(--space-3);
+    border-left: 2px solid var(--color-border);
+    color: var(--color-ink-2);
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+      color var(--duration) var(--ease),
+      border-color var(--duration) var(--ease);
+  }
+
+  .toc__item--h3 a {
+    padding-left: var(--space-6);
+    font-size: var(--text-xs);
+  }
+
+  .toc__item a:hover {
+    color: var(--color-ink);
+  }
+
+  .toc__item a[aria-current='location'] {
+    border-left-color: var(--color-accent);
+    color: var(--color-ink);
+    font-weight: 550;
+  }
+
+  @media (min-width: 68rem) {
+    .toc {
+      position: sticky;
+      top: calc(var(--header-height) + var(--space-8));
+      max-height: calc(100vh - var(--header-height) - var(--space-16));
+      overflow-y: auto;
+    }
+
+    .toc__details {
+      border: 0;
+      background: none;
+    }
+
+    .toc__summary {
+      padding: 0 0 var(--space-3);
+      color: var(--color-ink-3);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .toc__summary::after {
+      display: none;
+    }
+
+    .toc__list {
+      padding: 0;
+    }
+  }
+</style>

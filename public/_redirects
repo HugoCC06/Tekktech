@@ -1,0 +1,10 @@
+# Cloudflare Pages redirects. One rule per line: <from> <to> [status]
+# https://developers.cloudflare.com/pages/configuration/redirects/
+#
+# If an article's URL ever has to change (for example its category moves),
+# add a permanent redirect here so existing links and search rankings survive:
+#
+#   /gaming/old-slug/   /consumer-tech/new-slug/   301
+
+/feed/        /rss.xml       301
+/feed.xml     /rss.xml       301

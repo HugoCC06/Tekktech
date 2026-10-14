@@ -1,0 +1,63 @@
+---
+import { withBase } from '../lib/urls.ts';
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  message: string;
+  action?: { href: string; label: string };
+}
+
+const { title, message, action } = Astro.props;
+---
+
+<div class="empty-state" role="status">
+  <span class="empty-state__icon"><Icon name="book" /></span>
+  <h2>{title}</h2>
+  <p>{message}</p>
+  {
+    action && (
+      <a class="button button--ghost" href={withBase(action.href)}>
+        {action.label}
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-16) var(--space-6);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .empty-state__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+
+  .empty-state h2 {
+    font-size: var(--text-lg);
+  }
+
+  .empty-state p {
+    max-width: 30rem;
+    color: var(--color-ink-2);
+    font-size: var(--text-sm);
+  }
+
+  .empty-state .button {
+    margin-top: var(--space-3);
+  }
+</style>

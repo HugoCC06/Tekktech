@@ -1,0 +1,117 @@
+---
+/**
+ * Crawlable pagination: ordinary links to /page/2/, /page/3/… so search
+ * engines and visitors without JavaScript can reach every article.
+ */
+import { withBase } from '../lib/urls.ts';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Base path of the listing, e.g. "/gaming/". */
+  basePath: string;
+  current: number;
+  total: number;
+}
+
+const { basePath, current, total } = Astro.props;
+const pageHref = (page: number) => withBase(page === 1 ? basePath : `${basePath}page/${page}/`);
+const pages = Array.from({ length: total }, (_, index) => index + 1);
+---
+
+{
+  total > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      {current > 1 ? (
+        <a class="pagination__step" href={pageHref(current - 1)} rel="prev">
+          <Icon name="arrow-left" /> Newer
+        </a>
+      ) : (
+        <span />
+      )}
+      <ol class="pagination__pages">
+        {pages.map((page) => (
+          <li>
+            {page === current ? (
+              <span class="pagination__page" aria-current="page">
+                <span class="visually-hidden">Page </span>
+                {page}
+              </span>
+            ) : (
+              <a class="pagination__page" href={pageHref(page)}>
+                <span class="visually-hidden">Page </span>
+                {page}
+              </a>
+            )}
+          </li>
+        ))}
+      </ol>
+      {current < total ? (
+        <a class="pagination__step" href={pageHref(current + 1)} rel="next">
+          Older <Icon name="arrow-right" />
+        </a>
+      ) : (
+        <span />
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-16);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  .pagination__step {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .pagination__step:last-child {
+    justify-self: end;
+  }
+
+  .pagination__step :global(.icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .pagination__pages {
+    display: flex;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+  }
+
+  .pagination__page {
+    display: grid;
+    place-items: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-pill);
+    color: var(--color-ink-2);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a.pagination__page:hover {
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+  }
+
+  .pagination__page[aria-current='page'] {
+    background: var(--color-ink);
+    color: #fff;
+    font-weight: 600;
+  }
+</style>

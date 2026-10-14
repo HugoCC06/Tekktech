@@ -1,0 +1,195 @@
+---
+/**
+ * Newsletter signup.
+ *
+ * - With a provider configured (PUBLIC_NEWSLETTER_PROVIDER), renders a real
+ *   form that posts directly to the provider. TekkTech stores nothing.
+ * - Without one, renders nothing in production, and a clearly-labelled
+ *   setup placeholder in development and preview builds. A non-functional
+ *   form is never shown to readers.
+ */
+import { getNewsletterConfig, isDevServer, isPreviewBuild } from '../lib/integrations.ts';
+import { withBase } from '../lib/urls.ts';
+import Icon from './Icon.astro';
+
+interface Props {
+  variant?: 'band' | 'inline';
+}
+
+const { variant = 'band' } = Astro.props;
+const config = getNewsletterConfig();
+const showPlaceholder = config.provider === 'none' && (isDevServer || isPreviewBuild);
+const fieldId = `newsletter-email-${variant}`;
+---
+
+{
+  config.provider !== 'none' && (
+    <section class:list={['newsletter', `newsletter--${variant}`]} aria-labelledby={`${fieldId}-title`}>
+      <div class="newsletter__copy">
+        <h2 id={`${fieldId}-title`}>The TekkTech newsletter</h2>
+        <p>New reviews, guides and explainers, sent occasionally. No spam, no sponsored filler.</p>
+      </div>
+      <form class="newsletter__form" method="post" action={config.action} data-newsletter-form novalidate>
+        <div class="newsletter__row">
+          <label class="visually-hidden" for={fieldId}>
+            Email address
+          </label>
+          <input
+            id={fieldId}
+            class="newsletter__input"
+            type="email"
+            name={config.emailField}
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+            aria-describedby={`${fieldId}-consent ${fieldId}-error`}
+          />
+          <button class="button button--accent" type="submit">
+            Subscribe
+          </button>
+        </div>
+        <p id={`${fieldId}-error`} class="newsletter__error" role="alert" hidden />
+        <p id={`${fieldId}-consent`} class="newsletter__consent">
+          By subscribing you agree to receive the newsletter by email. Your address is handled by{' '}
+          {config.providerName} and you can unsubscribe at any time. See our{' '}
+          <a href={withBase('/privacy/')}>privacy policy</a>.
+        </p>
+      </form>
+    </section>
+  )
+}
+
+{
+  showPlaceholder && (
+    <aside class:list={['newsletter-placeholder', `newsletter--${variant}`]} aria-label="Newsletter setup note">
+      <Icon name="mail" />
+      <p>
+        <strong>Newsletter placeholder (only visible in development and previews).</strong> Set
+        <code>PUBLIC_NEWSLETTER_PROVIDER</code> to enable signups — see “Newsletter” in the README. Readers see nothing
+        here until a provider is configured.
+      </p>
+    </aside>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((form) => {
+    const input = form.querySelector<HTMLInputElement>('input[type="email"]');
+    const error = form.querySelector<HTMLElement>('[role="alert"]');
+    if (!input || !error) return;
+
+    const showError = (message: string) => {
+      error.textContent = message;
+      error.hidden = false;
+      input.setAttribute('aria-invalid', 'true');
+    };
+
+    form.addEventListener('submit', (event) => {
+      const value = input.value.trim();
+      if (!value) {
+        event.preventDefault();
+        showError('Enter your email address to subscribe.');
+        input.focus();
+      } else if (!input.checkValidity()) {
+        event.preventDefault();
+        showError('That email address does not look right. Check it and try again.');
+        input.focus();
+      }
+    });
+
+    input.addEventListener('input', () => {
+      error.hidden = true;
+      input.removeAttribute('aria-invalid');
+    });
+  });
+</script>
+
+<style>
+  .newsletter {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    border-radius: var(--radius-lg);
+    background: var(--color-ink);
+    color: #fff;
+  }
+
+  .newsletter h2 {
+    font-size: var(--text-xl);
+  }
+
+  .newsletter__copy p {
+    margin-top: var(--space-2);
+    color: #c4c8d2;
+    font-size: var(--text-sm);
+  }
+
+  .newsletter__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .newsletter__input {
+    flex: 1 1 14rem;
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0 var(--space-4);
+    border: 1px solid #444a55;
+    border-radius: var(--radius-pill);
+    background: #1a1d24;
+    color: #fff;
+  }
+
+  .newsletter__input::placeholder {
+    color: #8b909c;
+  }
+
+  .newsletter__input[aria-invalid='true'] {
+    border-color: #ff8a80;
+  }
+
+  .newsletter__error {
+    margin-top: var(--space-2);
+    color: #ffb4ab;
+    font-size: var(--text-sm);
+  }
+
+  .newsletter__consent {
+    margin-top: var(--space-3);
+    color: #a9aeb9;
+    font-size: var(--text-xs);
+  }
+
+  .newsletter__consent a {
+    color: #fff;
+  }
+
+  .newsletter :global(.button--accent:focus-visible),
+  .newsletter__input:focus-visible {
+    outline-color: #afc0ff;
+  }
+
+  @media (min-width: 52rem) {
+    .newsletter--band {
+      grid-template-columns: 1fr 1.1fr;
+      align-items: center;
+      gap: var(--space-12);
+      padding: var(--space-12);
+    }
+  }
+
+  .newsletter-placeholder {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    color: var(--color-ink-2);
+    font-size: var(--text-sm);
+  }
+
+  .newsletter-placeholder code {
+    font-size: 0.85em;
+  }
+</style>

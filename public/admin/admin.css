@@ -1,0 +1,23 @@
+.tt-admin-loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  background: #fafaf7;
+  color: #444a55;
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  z-index: 1;
+}
+.tt-admin-loading[hidden] {
+  display: none;
+}
+.tt-admin-error {
+  max-width: 32rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #f3c3bd;
+  border-radius: 10px;
+  background: #fdecea;
+  color: #b42318;
+}

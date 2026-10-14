@@ -1,0 +1,28 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { getPublishedArticles } from '../../lib/articles.ts';
+import { paginatedPaths, type ListingPageProps } from '../../lib/listing.ts';
+
+export const getStaticPaths = (async () => paginatedPaths(await getPublishedArticles())) satisfies GetStaticPaths;
+
+const { articles, page, totalPages, totalArticles } = Astro.props as ListingPageProps;
+---
+
+<ListingLayout
+  title="All articles"
+  heading="Latest articles"
+  eyebrow="Everything we publish"
+  intro="Every TekkTech review, comparison, guide and explainer, newest first."
+  description="Browse every TekkTech article — reviews, comparisons, ranked lists, explainers, guides and analysis — newest first."
+  articles={articles}
+  basePath="/articles/"
+  page={page}
+  totalPages={totalPages}
+  totalArticles={totalArticles}
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Articles', path: '/articles/' },
+  ]}
+  showCategorySwitcher
+/>

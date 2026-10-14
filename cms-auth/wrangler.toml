@@ -1,0 +1,12 @@
+# Standalone deployment of the CMS OAuth handler (optional).
+# Not needed when the site runs on Cloudflare Pages: functions/oauth/ is used instead.
+name = "tekktech-cms-auth"
+main = "worker.ts"
+compatibility_date = "2026-09-01"
+
+[vars]
+GITHUB_REPO = "hugocc06/tekktech"
+OAUTH_SCOPE = "repo"
+# ALLOWED_ORIGINS = "https://tekktech.com"
+# Secrets (set with `npx wrangler secret put NAME`):
+#   GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, ALLOWED_GITHUB_USERS

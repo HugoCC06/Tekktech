@@ -1,0 +1,76 @@
+---
+import { withBase } from '../lib/urls.ts';
+import Icon from './Icon.astro';
+
+interface Props {
+  items: { name: string; path: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {
+      items.map((item, index) => (
+        <li>
+          {index < items.length - 1 ? (
+            <>
+              <a href={withBase(item.path)}>{item.name}</a>
+              <Icon name="chevron-right" class="icon breadcrumbs__sep" />
+            </>
+          ) : (
+            <span aria-current="page">{item.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    padding-top: var(--space-6);
+    font-size: var(--text-xs);
+  }
+
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+  }
+
+  .breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .breadcrumbs a {
+    color: var(--color-ink-2);
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs [aria-current='page'] {
+    overflow: hidden;
+    max-width: 28ch;
+    color: var(--color-ink-3);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .breadcrumbs :global(.breadcrumbs__sep) {
+    width: 0.85rem;
+    height: 0.85rem;
+    color: var(--color-ink-3);
+  }
+</style>

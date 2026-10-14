@@ -1,0 +1,112 @@
+---
+/** The homepage lead story: the largest, most prominent article slot. */
+import { articlePath, getCategory, typeLabel, type Article } from '../lib/articles.ts';
+import { withBase } from '../lib/urls.ts';
+import ArticleImage from './ArticleImage.astro';
+import ArticleMeta from './ArticleMeta.astro';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const category = getCategory(article.data.category);
+---
+
+<article class="featured">
+  <div class="featured__media">
+    <ArticleImage
+      article={article}
+      sizes="(min-width: 76rem) 760px, (min-width: 60rem) 62vw, 100vw"
+      widths={[480, 760, 1024, 1520]}
+      priority
+      decorative
+    />
+  </div>
+  <div class="featured__body">
+    <p class="eyebrow featured__eyebrow">
+      <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
+      <span class="eyebrow__sep" aria-hidden="true">/</span>
+      <span class="eyebrow__muted">{typeLabel(article.data.type)}</span>
+    </p>
+    <h2 class="featured__title">
+      <a href={articlePath(article)}>{article.data.title}</a>
+    </h2>
+    <p class="featured__excerpt">{article.data.excerpt}</p>
+    <ArticleMeta article={article} />
+  </div>
+</article>
+
+<style>
+  .featured {
+    position: relative;
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .featured__media {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-2);
+  }
+
+  .featured__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--ease);
+  }
+
+  .featured:hover .featured__media :global(img) {
+    transform: scale(1.02);
+  }
+
+  .featured__body {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .featured__eyebrow {
+    position: relative;
+    z-index: 1;
+  }
+
+  .featured__title {
+    font-size: var(--text-3xl);
+    font-weight: 680;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .featured__title a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .featured__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .featured__title a:focus-visible {
+    outline: none;
+  }
+
+  .featured__title a:focus-visible::after {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 6px;
+    border-radius: var(--radius-lg);
+  }
+
+  .featured:hover .featured__title a {
+    color: var(--color-accent);
+  }
+
+  .featured__excerpt {
+    max-width: 40rem;
+    color: var(--color-ink-2);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+  }
+</style>

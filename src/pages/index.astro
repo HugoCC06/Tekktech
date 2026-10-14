@@ -1,0 +1,281 @@
+---
+import AdSlot from '../components/AdSlot.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import CategoryTiles from '../components/CategoryTiles.astro';
+import EmptyState from '../components/EmptyState.astro';
+import FeaturedStory from '../components/FeaturedStory.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categories, hubs, site } from '../site.config.ts';
+import { getPublishedArticles, typesForHub, type Article } from '../lib/articles.ts';
+
+const articles = await getPublishedArticles();
+
+// Each article appears at most once on the homepage.
+const used = new Set<string>();
+const take = (list: Article[], count: number) => {
+  const picked = list.filter((article) => !used.has(article.id)).slice(0, count);
+  picked.forEach((article) => used.add(article.id));
+  return picked;
+};
+
+const lead = take(
+  [...articles.filter((article) => article.data.featured), ...articles],
+  1,
+)[0];
+const topStories = take(articles, 4);
+const reviewTypes = typesForHub('reviews');
+const guideTypes = typesForHub('guides');
+const reviews = take(
+  articles.filter((article) => reviewTypes.includes(article.data.type)),
+  3,
+);
+const guides = take(
+  articles.filter((article) => guideTypes.includes(article.data.type)),
+  4,
+);
+const latest = take(articles, 6);
+
+const counts = Object.fromEntries(
+  categories.map((category) => [
+    category.slug,
+    articles.filter((article) => article.data.category === category.slug).length,
+  ]),
+);
+---
+
+<BaseLayout>
+  <div class="container">
+    <header class="masthead">
+      <h1 class="masthead__title">
+        Honest reviews and clear explanations <span>for people who care about technology.</span>
+      </h1>
+      <p class="masthead__note">{site.tagline}.</p>
+    </header>
+
+    {
+      !lead ? (
+        <EmptyState
+          title="The first articles are on their way"
+          message="TekkTech is getting ready to publish. Check back soon for reviews, comparisons and explainers."
+        />
+      ) : (
+        <section class="front" aria-label="Top stories">
+          <div class="front__lead">
+            <FeaturedStory article={lead} />
+          </div>
+          {topStories.length > 0 && (
+            <div class="front__side">
+              <h2 class="front__side-title">Latest</h2>
+              <ol class="front__list">
+                {topStories.map((article) => (
+                  <li>
+                    <ArticleCard article={article} variant="row" headingLevel={3} />
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </section>
+      )
+    }
+  </div>
+
+  <section class="section" aria-labelledby="categories-title">
+    <div class="container">
+      <SectionHeader
+        title="Explore by category"
+        id="categories-title"
+        link={{ href: '/articles/', label: 'All articles' }}
+      />
+      <CategoryTiles counts={counts} />
+    </div>
+  </section>
+
+  {
+    reviews.length > 0 && (
+      <section class="section" aria-labelledby="reviews-title">
+        <div class="container">
+          <SectionHeader
+            title="Reviews & buying advice"
+            id="reviews-title"
+            description="Reviews, comparisons and ranked guides that explain the trade-offs."
+            link={{ href: hubs.reviews.path, label: 'All reviews' }}
+          />
+          <div class="card-grid">
+            {reviews.map((article) => (
+              <ArticleCard article={article} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <div class="container">
+    <AdSlot placement="home-mid" />
+  </div>
+
+  {
+    guides.length > 0 && (
+      <section class="section" aria-labelledby="guides-title">
+        <div class="container">
+          <SectionHeader
+            title="Guides & explainers"
+            id="guides-title"
+            description="Evergreen explanations of how technology works — and how to choose it."
+            link={{ href: hubs.guides.path, label: 'All guides' }}
+          />
+          <ol class="guides">
+            {guides.map((article, index) => (
+              <li class="guides__item">
+                <span class="guides__number" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <ArticleCard article={article} variant="compact" showExcerpt />
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    latest.length > 0 && (
+      <section class="section" aria-labelledby="latest-title">
+        <div class="container">
+          <SectionHeader
+            title="More from TekkTech"
+            id="latest-title"
+            link={{ href: '/articles/', label: 'Browse all' }}
+          />
+          <div class="card-grid">
+            {latest.map((article) => (
+              <ArticleCard article={article} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <div class="container newsletter-wrap">
+    <NewsletterSignup />
+  </div>
+</BaseLayout>
+
+<style>
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-8);
+    padding-block: var(--space-10) var(--space-8);
+  }
+
+  .masthead__title {
+    max-width: 44rem;
+    font-size: var(--text-2xl);
+    font-weight: 650;
+    line-height: var(--leading-snug);
+  }
+
+  .masthead__title span {
+    color: var(--color-ink-3);
+  }
+
+  .masthead__note {
+    display: none;
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+  }
+
+  .front {
+    display: grid;
+    gap: var(--space-10);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-ink);
+  }
+
+  .front__side-title {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  .front__list {
+    display: grid;
+    padding: 0;
+    list-style: none;
+  }
+
+  .front__list li {
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .front__list li:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .guides {
+    display: grid;
+    gap: 0 var(--space-10);
+    padding: 0;
+    list-style: none;
+  }
+
+  .guides__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-5);
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .guides__number {
+    color: var(--color-accent);
+    font-size: var(--text-xl);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+
+  .guides__item :global(.card__excerpt) {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .newsletter-wrap {
+    padding-top: var(--space-section);
+  }
+
+  @media (min-width: 48rem) {
+    .masthead__note {
+      display: block;
+    }
+
+    .guides {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .front {
+      grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+      gap: var(--space-12);
+    }
+
+    .front__side {
+      padding-left: var(--space-10);
+      border-left: 1px solid var(--color-border);
+    }
+  }
+</style>

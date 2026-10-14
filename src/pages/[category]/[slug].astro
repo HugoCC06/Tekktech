@@ -1,0 +1,468 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import '../../styles/prose.css';
+import AdSlot from '../../components/AdSlot.astro';
+import AffiliateLinks from '../../components/AffiliateLinks.astro';
+import ArticleImage from '../../components/ArticleImage.astro';
+import ArticleMeta from '../../components/ArticleMeta.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Disclosures from '../../components/Disclosures.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import ReviewSummary from '../../components/ReviewSummary.astro';
+import ShareControls from '../../components/ShareControls.astro';
+import Sources from '../../components/Sources.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { author } from '../../site.config.ts';
+import {
+  articleRoute,
+  getCategory,
+  getIndexableTags,
+  getPublishedArticles,
+  getRelatedArticles,
+  lastModified,
+  needsAffiliateDisclosure,
+  tagSlug,
+  typeLabel,
+  type Article,
+} from '../../lib/articles.ts';
+import { countWords } from '../../lib/content-rules.ts';
+import { formatDate, isoDate, isSameDay } from '../../lib/format.ts';
+import { articleJsonLd, breadcrumbJsonLd, reviewJsonLd } from '../../lib/structured-data.ts';
+import { absoluteUrl, withBase } from '../../lib/urls.ts';
+
+export const getStaticPaths = (async () => {
+  const articles = await getPublishedArticles();
+  return articles.map((article) => ({
+    params: { category: article.data.category, slug: article.data.slug },
+    props: { article },
+  }));
+}) satisfies GetStaticPaths;
+
+const { article } = Astro.props as { article: Article };
+const { data } = article;
+const siteUrl = Astro.site!;
+const { Content, headings, remarkPluginFrontmatter } = await render(article);
+
+const category = getCategory(data.category);
+const route = articleRoute(article);
+const canonical = data.canonicalUrl ?? route;
+const pageUrl = absoluteUrl(route, siteUrl);
+const related = await getRelatedArticles(article);
+const indexableTags = await getIndexableTags();
+const modified = lastModified(article);
+const showUpdated = data.updatedDate && !isSameDay(data.updatedDate, data.publishDate);
+const showAffiliate = needsAffiliateDisclosure(article, remarkPluginFrontmatter.hasCommercialLinks === true);
+
+// Social image: explicit social image, else the featured image, cropped to 1200×630.
+const shareSource = data.socialImage ?? data.image;
+const shareImage = shareSource
+  ? await getImage({ src: shareSource, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 82 })
+  : undefined;
+const shareImageUrl = shareImage ? new URL(shareImage.src, siteUrl).toString() : undefined;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: category.name, path: `/${category.slug}/` },
+  { name: data.title, path: route },
+];
+
+const review = data.review
+  ? reviewJsonLd(
+      {
+        productName: data.review.productName,
+        score: data.review.score,
+        handsOn: data.review.handsOn,
+        demo: data.demo,
+        summary: data.review.summary,
+        path: route,
+        published: data.publishDate,
+      },
+      siteUrl,
+    )
+  : null;
+
+const jsonLd = [
+  articleJsonLd(
+    {
+      title: data.title,
+      description: data.seoDescription ?? data.excerpt,
+      path: route,
+      imageUrl: shareImageUrl,
+      published: data.publishDate,
+      modified,
+      section: category.name,
+      tags: data.tags,
+      wordCount: countWords(article.body ?? ''),
+    },
+    siteUrl,
+  ),
+  breadcrumbJsonLd(breadcrumbs, siteUrl),
+  ...(review ? [review] : []),
+];
+---
+
+<BaseLayout
+  title={data.seoTitle ?? data.title}
+  description={data.seoDescription ?? data.excerpt}
+  canonical={canonical}
+  image={shareImageUrl}
+  imageAlt={data.image ? data.imageAlt : undefined}
+  type="article"
+  noindex={data.demo}
+  jsonLd={jsonLd}
+  article={{ published: data.publishDate, modified, section: category.name, tags: data.tags }}
+>
+  <article
+    class="article"
+    data-pagefind-body
+    data-pagefind-meta={`category:${category.name}, type:${typeLabel(data.type)}, date:${formatDate(data.publishDate)}`}
+  >
+    <div class="container article__top">
+      <div data-pagefind-ignore>
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
+
+      <header class="article__header">
+        <p class="eyebrow" data-pagefind-ignore>
+          <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
+          <span class="eyebrow__sep" aria-hidden="true">/</span>
+          <span class="eyebrow__muted">{typeLabel(data.type)}</span>
+        </p>
+        <h1 class="article__title" data-pagefind-meta="title">{data.title}</h1>
+        <p class="article__standfirst">{data.excerpt}</p>
+
+        <div class="article__byline" data-pagefind-ignore>
+          <div class="article__byline-text">
+            <p>
+              By <a href={withBase(author.url)} rel="author">{author.name}</a>
+            </p>
+            <ArticleMeta article={article} variant="full" />
+            {
+              showUpdated && data.updatedDate && (
+                <p class="article__updated">
+                  Updated <time datetime={isoDate(data.updatedDate)}>{formatDate(data.updatedDate)}</time>
+                </p>
+              )
+            }
+          </div>
+          <ShareControls url={pageUrl} title={data.title} label="Share" />
+        </div>
+      </header>
+
+      <figure class="article__figure">
+        <div class="article__image">
+          <ArticleImage
+            article={article}
+            sizes="(min-width: 76rem) 1088px, 100vw"
+            widths={[640, 960, 1280, 1600]}
+            priority
+          />
+        </div>
+        {
+          data.image && (data.imageCaption || data.imageCredit || data.imageIsAiGenerated) && (
+            <figcaption class="article__caption">
+              {data.imageCaption && <span>{data.imageCaption}</span>}
+              {data.imageIsAiGenerated && <span class="article__credit">AI-generated illustration</span>}
+              {data.imageCredit && <span class="article__credit">{data.imageCredit}</span>}
+            </figcaption>
+          )
+        }
+      </figure>
+    </div>
+
+    <div class="container article__layout">
+      <aside class="article__aside" data-pagefind-ignore>
+        <TableOfContents headings={headings} />
+      </aside>
+
+      <div class="article__main">
+        <div data-pagefind-ignore>
+          <Disclosures
+            demo={data.demo}
+            sponsored={data.sponsored}
+            sponsorName={data.sponsorName}
+            affiliate={showAffiliate}
+          />
+        </div>
+
+        {data.review && <ReviewSummary review={data.review} />}
+
+        <div class="prose article__body">
+          <Content />
+        </div>
+
+        {
+          data.review && (data.review.methodology || data.review.alternatives.length > 0) && (
+            <section class="article__review-extra" aria-label="Review details">
+              {data.review.methodology && (
+                <div>
+                  <h2>How we assessed it</h2>
+                  <p>{data.review.methodology}</p>
+                </div>
+              )}
+              {data.review.alternatives.length > 0 && (
+                <div>
+                  <h2>Alternatives to consider</h2>
+                  <ul>
+                    {data.review.alternatives.map((alternative) => (
+                      <li>
+                        <a href={alternative.url} rel="noopener">
+                          {alternative.label}
+                        </a>
+                        {alternative.note && <span> — {alternative.note}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
+          )
+        }
+
+        <div data-pagefind-ignore>
+          <AffiliateLinks links={data.affiliateLinks} />
+        </div>
+
+        <div data-pagefind-ignore>
+          <Sources sources={data.sources} />
+        </div>
+
+        {
+          data.tags.length > 0 && (
+            <div class="article__tags" data-pagefind-ignore>
+              <h2 class="visually-hidden">Topics</h2>
+              <ul>
+                {data.tags.map((tag) => (
+                  <li>
+                    {indexableTags.has(tag) ? (
+                      <a href={withBase(`/tags/${tagSlug(tag)}/`)}>{tag}</a>
+                    ) : (
+                      <span>{tag}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <div class="article__footer-share" data-pagefind-ignore>
+          <ShareControls url={pageUrl} title={data.title} />
+        </div>
+
+        <div data-pagefind-ignore>
+          <AdSlot placement="article-end" />
+          <NewsletterSignup variant="inline" />
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="container" data-pagefind-ignore>
+    <RelatedArticles articles={related} />
+  </div>
+</BaseLayout>
+
+<style>
+  .article__header {
+    max-width: 50rem;
+    margin-inline: auto;
+    padding-block: var(--space-8) var(--space-10);
+    text-align: center;
+  }
+
+  .article__header .eyebrow {
+    justify-content: center;
+  }
+
+  .article__title {
+    margin-top: var(--space-4);
+    font-size: var(--text-3xl);
+    font-weight: 680;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .article__standfirst {
+    max-width: 42rem;
+    margin: var(--space-5) auto 0;
+    color: var(--color-ink-2);
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    text-wrap: pretty;
+  }
+
+  .article__byline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .article__byline-text {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+  }
+
+  .article__byline-text a {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .article__byline-text a:hover {
+    text-decoration: underline;
+  }
+
+  .article__updated {
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+  }
+
+  .article__byline :global(.share__label) {
+    display: none;
+  }
+
+  .article__figure {
+    max-width: 68rem;
+    margin-inline: auto;
+  }
+
+  .article__image {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-2);
+  }
+
+  .article__image :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .article__caption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    margin-top: var(--space-3);
+    color: var(--color-ink-2);
+    font-size: var(--text-xs);
+  }
+
+  .article__credit {
+    color: var(--color-ink-3);
+  }
+
+  .article__layout {
+    display: grid;
+    gap: var(--space-8);
+    margin-top: var(--space-10);
+  }
+
+  .article__main {
+    display: grid;
+    gap: var(--space-10);
+    min-width: 0;
+    max-width: var(--measure);
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .article__main > :global(div:empty) {
+    display: none;
+  }
+
+  .article__body {
+    max-width: none;
+  }
+
+  .article__review-extra {
+    display: grid;
+    gap: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-base);
+    color: var(--color-ink-2);
+  }
+
+  .article__review-extra h2 {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-md);
+    color: var(--color-ink);
+  }
+
+  .article__review-extra ul {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: 1.25rem;
+  }
+
+  .article__tags ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .article__tags li > * {
+    display: inline-flex;
+    align-items: center;
+    height: 2rem;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    color: var(--color-ink-2);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .article__tags a:hover {
+    background: var(--color-surface-3);
+    color: var(--color-ink);
+  }
+
+  .article__footer-share {
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 48rem) {
+    .article__byline {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .article__byline-text {
+      justify-items: start;
+    }
+  }
+
+  @media (min-width: 68rem) {
+    .article__layout {
+      grid-template-columns: minmax(12rem, 1fr) minmax(0, var(--measure)) minmax(0, 1fr);
+      align-items: start;
+      gap: var(--space-12);
+    }
+
+    .article__aside {
+      grid-column: 1;
+      height: 100%;
+    }
+
+    .article__main {
+      grid-column: 2;
+    }
+  }
+</style>

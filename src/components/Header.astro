@@ -1,0 +1,347 @@
+---
+import { navigation } from '../site.config.ts';
+import { stripBase, withBase } from '../lib/urls.ts';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+const current = stripBase(Astro.url.pathname);
+const isActive = (href: string) => current === href || current.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__brand" href={withBase('/')} aria-label="TekkTech home">
+      <Logo height={21} />
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul class="site-nav__list">
+        {
+          navigation.map((item) => (
+            <li>
+              <a
+                class="site-nav__link"
+                href={withBase(item.href)}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="search-trigger" href={withBase('/search/')} aria-label="Search articles">
+        <Icon name="search" />
+        <span class="search-trigger__text">Search</span>
+        <kbd class="search-trigger__kbd" aria-hidden="true">/</kbd>
+      </a>
+
+      <!-- A <details> menu works without JavaScript; the script below only adds polish. -->
+      <details class="mobile-menu" data-mobile-menu>
+        <summary class="mobile-menu__toggle" aria-label="Menu">
+          <Icon name="menu" class="icon mobile-menu__icon-open" />
+          <Icon name="close" class="icon mobile-menu__icon-close" />
+        </summary>
+        <nav class="mobile-menu__panel" aria-label="Mobile">
+          <ul>
+            {
+              navigation.map((item) => (
+                <li>
+                  <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
+                    {item.label}
+                    <Icon name="chevron-right" />
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a href={withBase('/articles/')} aria-current={isActive('/articles/') ? 'page' : undefined}>
+                All articles
+                <Icon name="chevron-right" />
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
+  if (menu) {
+    const summary = menu.querySelector('summary');
+    const syncLabel = () => summary?.setAttribute('aria-label', menu.open ? 'Close menu' : 'Menu');
+    menu.addEventListener('toggle', () => {
+      syncLabel();
+      document.documentElement.classList.toggle('menu-open', menu.open);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false;
+        summary?.focus();
+      }
+    });
+    window.matchMedia('(min-width: 60rem)').addEventListener('change', (event) => {
+      if (event.matches) menu.open = false;
+    });
+  }
+
+  // Press "/" anywhere (outside form fields) to jump to search.
+  document.addEventListener('keydown', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+    const searchInput = document.querySelector<HTMLInputElement>('[data-search-input]');
+    event.preventDefault();
+    if (searchInput) searchInput.focus();
+    else document.querySelector<HTMLAnchorElement>('.search-trigger')?.click();
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(250 250 247 / 0.96);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .site-header {
+      background: rgb(250 250 247 / 0.86);
+      backdrop-filter: saturate(1.4) blur(14px);
+    }
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    height: var(--header-height);
+  }
+
+  .site-header__brand {
+    display: inline-flex;
+    padding: var(--space-2) 0;
+    flex: none;
+  }
+
+  .site-nav {
+    display: none;
+    flex: 1;
+  }
+
+  .site-nav__list {
+    display: flex;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: var(--header-height);
+    padding: 0 var(--space-3);
+    color: var(--color-ink-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--duration) var(--ease);
+  }
+
+  .site-nav__link:hover {
+    color: var(--color-ink);
+  }
+
+  .site-nav__link[aria-current='page'] {
+    color: var(--color-ink);
+  }
+
+  .site-nav__link[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: -1px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-accent);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+  }
+
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-pill);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition:
+      background-color var(--duration) var(--ease),
+      border-color var(--duration) var(--ease);
+  }
+
+  .search-trigger:hover {
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+  }
+
+  .search-trigger__text,
+  .search-trigger__kbd {
+    display: none;
+  }
+
+  .mobile-menu {
+    position: static;
+  }
+
+  .mobile-menu__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-pill);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .mobile-menu__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-menu__toggle:hover {
+    background: var(--color-surface-2);
+  }
+
+  :global(.mobile-menu__icon-close),
+  .mobile-menu[open] :global(.mobile-menu__icon-open) {
+    display: none;
+  }
+
+  .mobile-menu[open] :global(.mobile-menu__icon-close) {
+    display: block;
+  }
+
+  .mobile-menu__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+    padding: var(--space-2) var(--gutter) var(--space-8);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-page);
+    box-shadow: var(--shadow-md);
+  }
+
+  .mobile-menu__panel ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobile-menu__panel a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-ink);
+    font-size: var(--text-lg);
+    font-weight: 550;
+    letter-spacing: var(--tracking-tight);
+    text-decoration: none;
+  }
+
+  .mobile-menu__panel a[aria-current='page'] {
+    color: var(--color-accent);
+  }
+
+  .mobile-menu__panel a :global(.icon) {
+    color: var(--color-ink-3);
+  }
+
+  @media (min-width: 60rem) {
+    .site-nav {
+      display: block;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+
+    .search-trigger {
+      width: auto;
+      height: 2.375rem;
+      padding: 0 var(--space-2) 0 var(--space-3);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface);
+      color: var(--color-ink-3);
+    }
+
+    .search-trigger :global(.icon) {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    .search-trigger__text {
+      display: inline;
+      padding-right: var(--space-6);
+    }
+
+    .search-trigger__kbd {
+      display: inline-grid;
+      place-items: center;
+      min-width: 1.4rem;
+      height: 1.4rem;
+      border: 1px solid var(--color-border-strong);
+      border-radius: 5px;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      color: var(--color-ink-3);
+    }
+
+    .search-trigger:hover {
+      border-color: var(--color-ink-3);
+      background: var(--color-surface);
+      color: var(--color-ink-2);
+    }
+  }
+
+  @media (min-width: 60rem) and (max-width: 71rem) {
+    .site-header__inner {
+      gap: var(--space-4);
+    }
+    .search-trigger__text {
+      padding-right: var(--space-1);
+    }
+    .search-trigger__kbd {
+      display: none;
+    }
+    .site-nav__link {
+      padding: 0 var(--space-2);
+    }
+    .site-nav__link[aria-current='page']::after {
+      left: var(--space-2);
+      right: var(--space-2);
+    }
+  }
+</style>

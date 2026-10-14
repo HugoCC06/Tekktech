@@ -1,0 +1,78 @@
+---
+/**
+ * Reserved advertising placement.
+ *
+ * No advertising provider is integrated. In production this renders
+ * nothing until PUBLIC_ADS_ENABLED=true *and* a provider's markup has been
+ * added below. In development, a labelled outline shows where the
+ * placement would appear so layouts can be checked.
+ *
+ * To integrate a provider later: add its script to BaseLayout (once), then
+ * render the provider's slot element inside `.ad-slot__inner`, keyed by
+ * `placement`. Keep the reserved min-height to avoid layout shift.
+ */
+import { adsEnabled, isDevServer } from '../lib/integrations.ts';
+
+interface Props {
+  placement: 'home-mid' | 'article-inline' | 'article-end' | 'listing';
+}
+
+const sizes: Record<Props['placement'], { minHeight: string; label: string }> = {
+  'home-mid': { minHeight: '120px', label: 'Homepage — between sections' },
+  'article-inline': { minHeight: '280px', label: 'Article — after the summary' },
+  'article-end': { minHeight: '280px', label: 'Article — after the content' },
+  listing: { minHeight: '120px', label: 'Listing pages' },
+};
+
+const { placement } = Astro.props;
+const size = sizes[placement];
+const providerConfigured = false; // Set to true once a provider's markup is added below.
+const render = (adsEnabled && providerConfigured) || isDevServer;
+---
+
+{
+  render && (
+    <aside
+      class:list={['ad-slot', { 'ad-slot--placeholder': !providerConfigured }]}
+      style={`--ad-min-height: ${size.minHeight}`}
+      aria-label="Advertisement"
+      data-placement={placement}
+    >
+      <p class="ad-slot__label">Advertisement</p>
+      <div class="ad-slot__inner">
+        {!providerConfigured && <span class="ad-slot__dev">Ad placement: {size.label} (development only)</span>}
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  .ad-slot {
+    margin-block: var(--space-10);
+  }
+
+  .ad-slot__label {
+    margin-bottom: var(--space-2);
+    color: var(--color-ink-3);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .ad-slot__inner {
+    display: grid;
+    place-items: center;
+    min-height: var(--ad-min-height);
+  }
+
+  .ad-slot--placeholder .ad-slot__inner {
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-md);
+  }
+
+  .ad-slot__dev {
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+  }
+</style>

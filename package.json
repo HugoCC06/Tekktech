@@ -1,0 +1,57 @@
+{
+  "name": "tekktech",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TekkTech \u2014 an independent technology publication.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "npm run prepare:admin && astro dev",
+    "cms": "node scripts/cms-local.ts",
+    "cms:git": "node scripts/cms-local.ts --git",
+    "build": "npm run prepare:admin && astro build && pagefind --site dist",
+    "preview": "astro preview --port 4321",
+    "check": "astro check",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:publishing": "node scripts/test-publishing-flow.ts",
+    "verify": "npm run lint && npm run check && npm run test && npm run build && npm run test:e2e",
+    "prepare:admin": "node scripts/prepare-admin.ts",
+    "brand": "node scripts/generate-brand-assets.ts",
+    "illustrations": "node scripts/generate-placeholder-illustrations.ts",
+    "demo:remove": "node scripts/remove-demo-content.ts"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.2",
+    "@astrojs/rss": "^4.0.19",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.1",
+    "astro": "^7.3.8",
+    "rehype-sanitize": "^6.0.0",
+    "sharp": "^0.35.5",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
+    "@fontsource/inter": "^5.3.0",
+    "@playwright/test": "^1.64.0",
+    "@types/hast": "^3.0.5",
+    "@types/node": "^22.20.5",
+    "decap-server": "^3.11.3",
+    "eslint": "^10.12.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "opentype.js": "^2.0.0",
+    "pagefind": "^1.5.2",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.4"
+  }
+}

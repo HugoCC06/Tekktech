@@ -1,0 +1,89 @@
+---
+/**
+ * "Where to buy" links from the article's affiliateLinks field. Every link
+ * is labelled and marked rel="sponsored nofollow" as search engines require
+ * for paid or commission-earning links.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  links: { label: string; url: string; retailer?: string }[];
+}
+
+const { links } = Astro.props;
+---
+
+{
+  links.length > 0 && (
+    <section class="affiliate" aria-labelledby="affiliate-title">
+      <h2 id="affiliate-title">Where to buy</h2>
+      <ul>
+        {links.map((link) => (
+          <li>
+            <a class="affiliate__link" href={link.url} rel="sponsored nofollow noopener" target="_blank">
+              <span>
+                {link.label}
+                {link.retailer && <span class="affiliate__retailer">{link.retailer}</span>}
+              </span>
+              <Icon name="external" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="affiliate__note">Affiliate links: TekkTech may earn a commission. Prices change frequently — check the retailer.</p>
+    </section>
+  )
+}
+
+<style>
+  .affiliate {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .affiliate h2 {
+    font-size: var(--text-md);
+  }
+
+  .affiliate ul {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  .affiliate__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .affiliate__link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .affiliate__retailer {
+    display: block;
+    color: var(--color-ink-3);
+    font-weight: 400;
+    font-size: var(--text-xs);
+  }
+
+  .affiliate__note {
+    margin-top: var(--space-3);
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+  }
+</style>

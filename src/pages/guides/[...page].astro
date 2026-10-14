@@ -1,0 +1,32 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ListingLayout from '../../layouts/ListingLayout.astro';
+import { hubs } from '../../site.config.ts';
+import { getPublishedArticles, typesForHub } from '../../lib/articles.ts';
+import { paginatedPaths, type ListingPageProps } from '../../lib/listing.ts';
+
+export const getStaticPaths = (async () => {
+  const types = typesForHub('guides');
+  const articles = (await getPublishedArticles()).filter((article) => types.includes(article.data.type));
+  return paginatedPaths(articles);
+}) satisfies GetStaticPaths;
+
+const hub = hubs.guides;
+const { articles, page, totalPages, totalArticles } = Astro.props as ListingPageProps;
+---
+
+<ListingLayout
+  title={hub.title}
+  eyebrow={hub.navLabel}
+  intro={hub.description}
+  description={hub.description}
+  articles={articles}
+  basePath={hub.path}
+  page={page}
+  totalPages={totalPages}
+  totalArticles={totalArticles}
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: hub.navLabel, path: hub.path },
+  ]}
+/>

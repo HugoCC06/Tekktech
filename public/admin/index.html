@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>TekkTech — Publishing dashboard</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <!--
+      Private publishing dashboard (Decap CMS).
+      This page is public, but it contains no secrets and can do nothing on its
+      own: every read and write goes to the GitHub API with the signed-in
+      owner's token, issued only after server-side checks in /oauth/.
+    -->
+    <div id="tt-admin-loading" class="tt-admin-loading" role="status">
+      <img src="../brand/tekktech-wordmark.svg" alt="TekkTech" width="160" height="30" />
+      <p>Loading the publishing dashboard…</p>
+      <noscript><p>The dashboard requires JavaScript.</p></noscript>
+    </div>
+    <script src="admin-init.js"></script>
+    <script src="vendor/decap-cms.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

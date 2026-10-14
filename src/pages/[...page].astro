@@ -1,0 +1,98 @@
+---
+/**
+ * Standalone pages (About, Editorial policy, legal pages…) from
+ * src/content/pages/. Editable in the CMS under "Site pages".
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import '../styles/prose.css';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, isoDate } from '../lib/format.ts';
+import { breadcrumbJsonLd } from '../lib/structured-data.ts';
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({ params: { page: page.id }, props: { page } }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: CollectionEntry<'pages'> };
+const { Content } = await render(page);
+const path = `/${page.id}/`;
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: page.data.title, path },
+];
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description}
+  canonical={path}
+  noindex={page.data.noindex}
+  jsonLd={[breadcrumbJsonLd(breadcrumbs, Astro.site!)]}
+>
+  <div class="container container--narrow static-page">
+    <Breadcrumbs items={breadcrumbs} />
+    <header class="static-page__header">
+      <h1>{page.data.title}</h1>
+      <p class="static-page__description">{page.data.description}</p>
+      {
+        page.data.updatedDate && (
+          <p class="static-page__updated">
+            Last updated <time datetime={isoDate(page.data.updatedDate)}>{formatDate(page.data.updatedDate)}</time>
+          </p>
+        )
+      }
+    </header>
+
+    {
+      page.data.requiresReview && (
+        <div class="notice notice--warning static-page__review" role="note">
+          <Icon name="alert" />
+          <p>
+            <strong>Draft template — requires review before launch.</strong> This page is a starting point, not legal
+            advice. Replace the bracketed placeholders and have it reviewed for the jurisdictions you operate in.
+          </p>
+        </div>
+      )
+    }
+
+    <div class="prose">
+      <Content />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .static-page__header {
+    padding-block: var(--space-6) var(--space-8);
+  }
+
+  .static-page__header h1 {
+    font-size: var(--text-3xl);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .static-page__description {
+    margin-top: var(--space-3);
+    color: var(--color-ink-2);
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+  }
+
+  .static-page__updated {
+    margin-top: var(--space-3);
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+  }
+
+  .static-page__review {
+    margin-bottom: var(--space-8);
+  }
+
+  .static-page .prose {
+    max-width: none;
+  }
+</style>

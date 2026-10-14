@@ -1,0 +1,216 @@
+---
+/**
+ * Shared layout for article listings: /articles/, category pages, the
+ * Reviews and Guides hubs, and tag pages.
+ */
+import ArticleCard from '../components/ArticleCard.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import EmptyState from '../components/EmptyState.astro';
+import Pagination from '../components/Pagination.astro';
+import { categories } from '../site.config.ts';
+import type { Article } from '../lib/articles.ts';
+import { breadcrumbJsonLd } from '../lib/structured-data.ts';
+import { withBase } from '../lib/urls.ts';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  /** Visible heading; defaults to the title. */
+  heading?: string;
+  eyebrow?: string;
+  intro: string;
+  description: string;
+  articles: Article[];
+  basePath: string;
+  page: number;
+  totalPages: number;
+  totalArticles: number;
+  breadcrumbs: { name: string; path: string }[];
+  /** Highlights the current category in the category switcher. */
+  currentCategory?: string;
+  showCategorySwitcher?: boolean;
+  emptyMessage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  heading = title,
+  eyebrow,
+  intro,
+  description,
+  articles,
+  basePath,
+  page,
+  totalPages,
+  totalArticles,
+  breadcrumbs,
+  currentCategory,
+  showCategorySwitcher = false,
+  emptyMessage = 'New articles are on the way. In the meantime, explore our other coverage.',
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site!;
+const pageTitle = page > 1 ? `${title} — page ${page}` : title;
+const canonical = page > 1 ? `${basePath}page/${page}/` : basePath;
+const [lead, ...rest] = articles;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={description}
+  canonical={canonical}
+  noindex={noindex}
+  jsonLd={[breadcrumbJsonLd(breadcrumbs, siteUrl)]}
+>
+  <div class="container listing">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="listing__header">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1>{heading}</h1>
+      <p class="listing__intro">{intro}</p>
+      <p class="listing__count">
+        {totalArticles === 1 ? '1 article' : `${totalArticles} articles`}
+        {totalPages > 1 && ` · Page ${page} of ${totalPages}`}
+      </p>
+    </header>
+
+    {
+      showCategorySwitcher && (
+        <nav class="category-switcher" aria-label="Categories">
+          <ul>
+            {categories.map((category) => (
+              <li>
+                <a
+                  href={withBase(`/${category.slug}/`)}
+                  aria-current={currentCategory === category.slug ? 'page' : undefined}
+                >
+                  {category.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    {
+      articles.length === 0 ? (
+        <EmptyState
+          title="Nothing published here yet"
+          message={emptyMessage}
+          action={{ href: '/articles/', label: 'Browse all articles' }}
+        />
+      ) : (
+        <>
+          {page === 1 && lead && (
+            <div class="listing__lead">
+              <ArticleCard article={lead} headingLevel={2} sizes="(min-width: 76rem) 760px, (min-width: 48rem) 60vw, 100vw" />
+            </div>
+          )}
+          <div class="card-grid">
+            {(page === 1 ? rest : articles).map((article) => (
+              <ArticleCard article={article} headingLevel={2} />
+            ))}
+          </div>
+        </>
+      )
+    }
+
+    <Pagination basePath={basePath} current={page} total={totalPages} />
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .listing__header {
+    max-width: 44rem;
+    padding-block: var(--space-6) var(--space-10);
+  }
+
+  .listing__header h1 {
+    margin-top: var(--space-3);
+    font-size: var(--text-display);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .listing__intro {
+    margin-top: var(--space-5);
+    color: var(--color-ink-2);
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+  }
+
+  .listing__count {
+    margin-top: var(--space-4);
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .category-switcher {
+    margin-bottom: var(--space-10);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .category-switcher ul {
+    display: flex;
+    gap: var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .category-switcher a {
+    display: inline-flex;
+    align-items: center;
+    height: 2.25rem;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--color-ink-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .category-switcher a:hover {
+    border-color: var(--color-ink-3);
+    color: var(--color-ink);
+  }
+
+  .category-switcher a[aria-current='page'] {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: #fff;
+  }
+
+  .listing__lead {
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 48rem) {
+    .listing__lead :global(.card--standard) {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      align-items: center;
+      gap: var(--space-10);
+    }
+
+    .listing__lead :global(.card__title) {
+      font-size: var(--text-2xl);
+      line-height: var(--leading-tight);
+    }
+
+    .listing__lead :global(.card__excerpt) {
+      font-size: var(--text-base);
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+    }
+  }
+</style>

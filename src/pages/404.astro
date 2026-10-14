@@ -1,0 +1,80 @@
+---
+import ArticleCard from '../components/ArticleCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedArticles } from '../lib/articles.ts';
+import { withBase } from '../lib/urls.ts';
+
+const recent = (await getPublishedArticles()).slice(0, 3);
+---
+
+<BaseLayout title="Page not found" description="The page you were looking for could not be found." noindex>
+  <div class="container not-found">
+    <p class="not-found__code">404</p>
+    <h1>We couldn't find that page</h1>
+    <p class="not-found__text">
+      The link may be broken, or the article may have moved or been removed. Try searching, or start from one of these.
+    </p>
+    <div class="not-found__actions">
+      <a class="button" href={withBase('/search/')}>Search articles</a>
+      <a class="button button--ghost" href={withBase('/')}>Go to the homepage</a>
+    </div>
+
+    {
+      recent.length > 0 && (
+        <section class="not-found__recent" aria-labelledby="recent-title">
+          <h2 id="recent-title">Recent articles</h2>
+          <div class="card-grid">
+            {recent.map((article) => (
+              <ArticleCard article={article} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-top: var(--space-16);
+  }
+
+  .not-found__code {
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .not-found h1 {
+    max-width: 36rem;
+    margin-top: var(--space-3);
+    font-size: var(--text-display);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .not-found__text {
+    max-width: 34rem;
+    margin-top: var(--space-5);
+    color: var(--color-ink-2);
+    font-size: var(--text-md);
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+
+  .not-found__recent {
+    margin-top: var(--space-20);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-ink);
+  }
+
+  .not-found__recent h2 {
+    margin-bottom: var(--space-8);
+    font-size: var(--text-xl);
+  }
+</style>

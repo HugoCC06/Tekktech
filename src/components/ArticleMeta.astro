@@ -1,0 +1,59 @@
+---
+import { readingTime, type Article } from '../lib/articles.ts';
+import { formatDate, formatShortDate, isoDate } from '../lib/format.ts';
+
+interface Props {
+  article: Article;
+  /** "short" for cards, "full" for the article header. */
+  variant?: 'short' | 'full';
+}
+
+const { article, variant = 'short' } = Astro.props;
+const minutes = readingTime(article);
+const format = variant === 'full' ? formatDate : formatShortDate;
+---
+
+<p class:list={['article-meta', `article-meta--${variant}`]}>
+  <time datetime={isoDate(article.data.publishDate)}>{format(article.data.publishDate)}</time>
+  <span class="article-meta__sep" aria-hidden="true">·</span>
+  <span>{minutes} min read</span>
+  {
+    article.data.demo && (
+      <>
+        <span class="article-meta__sep" aria-hidden="true">·</span>
+        <span class="article-meta__demo">Demo</span>
+      </>
+    )
+  }
+</p>
+
+<style>
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--space-2);
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .article-meta--full {
+    font-size: var(--text-sm);
+  }
+
+  .article-meta__sep {
+    color: var(--color-border-strong);
+  }
+
+  .article-meta__demo {
+    padding: 0.05rem 0.45rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+</style>

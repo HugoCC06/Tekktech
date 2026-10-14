@@ -1,0 +1,66 @@
+---
+interface Props {
+  sources: { title: string; url: string; publisher?: string; note?: string }[];
+}
+
+const { sources } = Astro.props;
+---
+
+{
+  sources.length > 0 && (
+    <section class="sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">Sources and references</h2>
+      <ol>
+        {sources.map((source) => (
+          <li>
+            <a href={source.url} rel="noopener">
+              {source.title}
+            </a>
+            {source.publisher && <span class="sources__publisher"> — {source.publisher}</span>}
+            {source.note && <span class="sources__note">{source.note}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .sources {
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .sources h2 {
+    font-size: var(--text-md);
+  }
+
+  .sources ol {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding-left: 1.25rem;
+    color: var(--color-ink-2);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  .sources li::marker {
+    color: var(--color-ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sources a {
+    overflow-wrap: anywhere;
+  }
+
+  .sources__publisher {
+    color: var(--color-ink-3);
+  }
+
+  .sources__note {
+    display: block;
+    color: var(--color-ink-3);
+    font-size: var(--text-xs);
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ListingLayout from '../../../layouts/ListingLayout.astro';
+import { getIndexableTags, tagSlug } from '../../../lib/articles.ts';
+import { paginatedPaths, type ListingPageProps } from '../../../lib/listing.ts';
+
+// Tag pages exist only for tags used by at least two published articles,
+// so the site never generates thin, near-empty tag pages.
+export const getStaticPaths = (async () => {
+  const tags = await getIndexableTags();
+  return [...tags].flatMap(([tag, articles]) =>
+    paginatedPaths(articles, { tag: tagSlug(tag) }).map((path) => ({
+      ...path,
+      props: { ...path.props, label: tag },
+    })),
+  );
+}) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+const { articles, page, totalPages, totalArticles, label } = Astro.props as ListingPageProps & { label: string };
+const display = label.charAt(0).toUpperCase() + label.slice(1);
+---
+
+<ListingLayout
+  title={`${display}`}
+  eyebrow="Topic"
+  intro={`TekkTech articles about ${label}.`}
+  description={`Reviews, guides and explainers about ${label} from TekkTech.`}
+  articles={articles}
+  basePath={`/tags/${tag}/`}
+  page={page}
+  totalPages={totalPages}
+  totalArticles={totalArticles}
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Articles', path: '/articles/' },
+    { name: display, path: `/tags/${tag}/` },
+  ]}
+/>
