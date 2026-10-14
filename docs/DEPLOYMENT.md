@@ -16,7 +16,8 @@ Nothing here has been done on your behalf. No accounts, domains or credentials w
 8. [Recommended GitHub settings](#recommended-github-settings)
 9. [Environment variable reference](#environment-variable-reference)
 10. [Moving to another host](#moving-to-another-host)
-11. [Launch checklist](#launch-checklist)
+11. [Deploying to GitHub Pages instead](#deploying-to-github-pages-instead)
+12. [Launch checklist](#launch-checklist)
 
 ---
 
@@ -199,6 +200,31 @@ npx wrangler secret put ALLOWED_GITHUB_USERS
 Then set `ALLOWED_ORIGINS = "https://tekktech.com"` in `cms-auth/wrangler.toml` and redeploy. Change the OAuth App callback to `https://tekktech-cms-auth.<account>.workers.dev/oauth/callback`, and build the site with `CMS_AUTH_BASE_URL=https://tekktech-cms-auth.<account>.workers.dev`.
 
 ---
+
+## Deploying to GitHub Pages instead
+
+The repository also includes `.github/workflows/deploy-github-pages.yml`, which builds the site and publishes it to GitHub Pages at `https://hugocc06.github.io/Tekktech/`, or at your custom domain.
+
+> GitHub's terms say Pages is not intended for running an online business. GitHub Pages is fine while TekkTech isn't monetised; move to Cloudflare Pages (above) before adding ads or affiliate income.
+
+**Setup**
+
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions.** This is the important step. With the default "Deploy from a branch", GitHub runs Jekyll on the raw source code and the build fails with `Invalid YAML front matter in …astro`.
+2. Make sure a `main` branch exists (see step 1 at the top). The workflow runs on every push to `main`, or manually from **Actions → Deploy to GitHub Pages → Run workflow**.
+3. If Settings → Environments → `github-pages` restricts deployment branches, allow `main`.
+
+The site address and the `/Tekktech/` sub-path are detected automatically, and every page, image, search result and dashboard link works under that sub-path (verified). If you add a custom domain in **Settings → Pages → Custom domain**, the next deployment switches to it automatically. To override the canonical address, add a repository variable `SITE_URL` (**Settings → Secrets and variables → Actions → Variables**).
+
+**What's different from Cloudflare Pages**
+
+| Feature                                | GitHub Pages                                                                                                                                                                                                                                                                      |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public website, search, RSS, sitemap   | ✅ Works                                                                                                                                                                                                                                                                          |
+| Dashboard sign-in (`/oauth/`)          | ❌ GitHub Pages can't run server code. Deploy the standalone sign-in Worker ([Moving to another host](#moving-to-another-host)), then add a repository variable `CMS_AUTH_BASE_URL` with the Worker's address and set the OAuth App callback to `https://<worker>/oauth/callback` |
+| Security headers (`public/_headers`)   | ❌ Ignored (GitHub sets its own defaults)                                                                                                                                                                                                                                         |
+| Redirects (`public/_redirects`)        | ❌ Ignored                                                                                                                                                                                                                                                                        |
+| Preview deployments for drafts         | ❌ Not available. Use the dashboard's live preview                                                                                                                                                                                                                                |
+| Rebuild on every dashboard **Publish** | ✅ Publishing merges into `main`, which triggers the workflow                                                                                                                                                                                                                     |
 
 ## Launch checklist
 

@@ -85,6 +85,7 @@ import { withBase } from '../lib/urls.ts';
   }
   interface Pagefind {
     init: () => Promise<void>;
+    options?: (options: { baseUrl?: string }) => Promise<void>;
     debouncedSearch: (
       query: string,
       options?: object,
@@ -105,6 +106,8 @@ import { withBase } from '../lib/urls.ts';
     if (pagefind || loadFailed) return pagefind;
     try {
       const module = (await import(/* @vite-ignore */ `${base}pagefind/pagefind.js`)) as Pagefind;
+      // Result URLs must include the base path when the site lives in a sub-folder (e.g. GitHub Pages).
+      await module.options?.({ baseUrl: base });
       await module.init();
       pagefind = module;
     } catch {

@@ -213,8 +213,14 @@
     })
     .then(function (config) {
       config.load_config_file = false;
-      if (!config.backend.base_url) config.backend.base_url = window.location.origin;
-      config.backend.auth_endpoint = (basePath + 'oauth/auth').replace(/^\//, '');
+      if (config.backend.base_url) {
+        // Standalone sign-in Worker (CMS_AUTH_BASE_URL): endpoints live at its root.
+        config.backend.auth_endpoint = 'oauth/auth';
+      } else {
+        // Same-origin sign-in function, under the site's base path.
+        config.backend.base_url = window.location.origin;
+        config.backend.auth_endpoint = (basePath + 'oauth/auth').replace(/^\//, '');
+      }
       config.logo_url = basePath + 'brand/tekktech-wordmark.svg';
       registerPreviews(config);
       CMS.init({ config: config });
