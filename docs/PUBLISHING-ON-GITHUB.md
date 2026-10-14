@@ -55,4 +55,5 @@ Then fix the file and commit again.
 
 - Prefer a desktop browser, or press `.` on any GitHub repository page to open a full editor (github.dev) in your browser.
 - Before publishing, run through the [editorial checklist](EDITORIAL-CHECKLIST.md).
+- To have Claude write an article in the right format, use the prompt in [`content-templates/CLAUDE-PROMPT.md`](../content-templates/CLAUDE-PROMPT.md).
 - Type-specific outlines (review, comparison, ranked list and so on) are in [`content-templates/`](../content-templates/). Paste one under the `---` line in place of the example body.
