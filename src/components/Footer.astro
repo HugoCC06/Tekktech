@@ -10,45 +10,47 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="site-footer__top">
       <div class="site-footer__brand">
-        <a href={withBase('/')} aria-label="TekkTech home"><Logo height={22} /></a>
+        <a href={withBase('/')} aria-label="TekkTech home">
+          <Logo height={22} />
+        </a>
         <p>
-          An independent technology publication. Honest reviews, fair comparisons and clear explanations — written
-          for people who care about technology.
+          An independent technology publication. Honest reviews, fair comparisons and clear explanations — written for
+          people who care about technology.
         </p>
       </div>
 
-      {
-        footerNavigation.sections.map((section) => (
-          <nav class="site-footer__section" aria-label={section.title}>
-            <h2>{section.title}</h2>
-            <ul>
-              {section.links.map((link) => (
-                <li>
-                  <a href={withBase(link.href)}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))
-      }
-    </div>
-
-    <div class="site-footer__bottom">
-      <p>© {year} {site.name}. All rights reserved.</p>
-      {
-        socialProfiles.length > 0 && (
-          <ul class="site-footer__social">
-            {socialProfiles.map((profile) => (
+      {footerNavigation.sections.map((section) => (
+        <nav class="site-footer__section" aria-label={section.title}>
+          <h2>{section.title}</h2>
+          <ul>
+            {section.links.map((link) => (
               <li>
-                <a href={profile.url} rel="me noopener">
-                  {profile.label}
-                </a>
+                <a href={withBase(link.href)}>{link.label}</a>
               </li>
             ))}
           </ul>
-        )
-      }
-      <p>Some articles contain affiliate links. <a href={withBase('/affiliate-disclosure/')}>Learn how we handle them</a>.</p>
+        </nav>
+      ))}
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>
+        © {year} {site.name}. All rights reserved.
+      </p>
+      {socialProfiles.length > 0 && (
+        <ul class="site-footer__social">
+          {socialProfiles.map((profile) => (
+            <li>
+              <a href={profile.url} rel="me noopener">
+                {profile.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p>
+        <a href={withBase('/affiliate-disclosure/')}>How we handle affiliate links</a>
+      </p>
     </div>
   </div>
 </footer>

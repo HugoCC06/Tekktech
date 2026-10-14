@@ -38,26 +38,22 @@ const breadcrumbs = [
     <header class="static-page__header">
       <h1>{page.data.title}</h1>
       <p class="static-page__description">{page.data.description}</p>
-      {
-        page.data.updatedDate && (
-          <p class="static-page__updated">
-            Last updated <time datetime={isoDate(page.data.updatedDate)}>{formatDate(page.data.updatedDate)}</time>
-          </p>
-        )
-      }
+      {page.data.updatedDate && (
+        <p class="static-page__updated">
+          Last updated <time datetime={isoDate(page.data.updatedDate)}>{formatDate(page.data.updatedDate)}</time>
+        </p>
+      )}
     </header>
 
-    {
-      page.data.requiresReview && (
-        <div class="notice notice--warning static-page__review" role="note">
-          <Icon name="alert" />
-          <p>
-            <strong>Draft template — requires review before launch.</strong> This page is a starting point, not legal
-            advice. Replace the bracketed placeholders and have it reviewed for the jurisdictions you operate in.
-          </p>
-        </div>
-      )
-    }
+    {page.data.requiresReview && (
+      <div class="notice notice--warning static-page__review" role="note">
+        <Icon name="alert" />
+        <p>
+          <strong>Draft template — requires review before launch.</strong> This page is a starting point, not legal
+          advice. Replace the bracketed placeholders and have it reviewed for the jurisdictions you operate in.
+        </p>
+      </div>
+    )}
 
     <div class="prose">
       <Content />

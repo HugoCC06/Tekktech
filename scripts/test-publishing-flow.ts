@@ -74,7 +74,10 @@ function onMain(path: string) {
 function prepareWorkspace() {
   work = mkdtempSync(join(tmpdir(), 'tekktech-publishing-'));
   const skip = new Set(['node_modules', 'dist', '.git', '.astro', 'test-results', 'playwright-report']);
-  cpSync(projectRoot, work, { recursive: true, filter: (source) => !skip.has(source.slice(projectRoot.length + 1).split(/[\\/]/)[0] ?? '') });
+  cpSync(projectRoot, work, {
+    recursive: true,
+    filter: (source) => !skip.has(source.slice(projectRoot.length + 1).split(/[\\/]/)[0] ?? ''),
+  });
   symlinkSync(join(projectRoot, 'node_modules'), join(work, 'node_modules'), 'junction');
   git('init', '-q', '-b', 'main');
   git('-c', 'user.email=test@example.com', '-c', 'user.name=Publishing Test', 'add', '-A');
@@ -105,10 +108,14 @@ function build() {
     cwd: work,
     stdio: ['ignore', 'ignore', 'inherit'],
   });
-  execFileSync(process.execPath, [join(work, 'node_modules/pagefind/lib/runner/bin.cjs'), '--site', 'dist', '--silent'], {
-    cwd: work,
-    stdio: ['ignore', 'ignore', 'inherit'],
-  });
+  execFileSync(
+    process.execPath,
+    [join(work, 'node_modules/pagefind/lib/runner/bin.cjs'), '--site', 'dist', '--silent'],
+    {
+      cwd: work,
+      stdio: ['ignore', 'ignore', 'inherit'],
+    },
+  );
 }
 
 const types: Record<string, string> = {
@@ -137,7 +144,10 @@ function startServer() {
       response.end(existsSync(join(work, 'dist/404.html')) ? readFileSync(join(work, 'dist/404.html')) : 'Not found');
       return;
     }
-    response.writeHead(200, { 'Content-Type': types[extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' });
+    response.writeHead(200, {
+      'Content-Type': types[extname(file)] ?? 'application/octet-stream',
+      'Cache-Control': 'no-store',
+    });
     response.end(readFileSync(file));
   });
   return new Promise<void>((done) => server!.listen(SITE_PORT, done));
@@ -171,7 +181,10 @@ function dist(path: string) {
 
 async function searchFinds(page: Page, term: string) {
   await page.goto(`http://localhost:${SITE_PORT}/search/?q=${encodeURIComponent(term)}`);
-  await page.locator('[data-search-status]').filter({ hasText: /result|No articles/ }).waitFor({ timeout: 15000 });
+  await page
+    .locator('[data-search-status]')
+    .filter({ hasText: /result|No articles/ })
+    .waitFor({ timeout: 15000 });
   return (await page.locator('.search-result').count()) > 0;
 }
 
@@ -194,17 +207,26 @@ async function openEntry(page: Page) {
 
 async function save(page: Page) {
   await page.getByRole('button', { name: 'Save', exact: true }).click();
-  await page.getByText(/Entry saved|Changes saved/i).first().waitFor({ timeout: 20000 });
+  await page
+    .getByText(/Entry saved|Changes saved/i)
+    .first()
+    .waitFor({ timeout: 20000 });
 }
 
 async function publishNow(page: Page) {
   // Move through the workflow to "Ready", then publish.
   await page.getByRole('button', { name: /^Status:/ }).click();
   await page.getByRole('menuitem', { name: 'Ready' }).click();
-  await page.getByText(/Entry status updated/i).first().waitFor({ timeout: 20000 });
+  await page
+    .getByText(/Entry status updated/i)
+    .first()
+    .waitFor({ timeout: 20000 });
   await page.getByRole('button', { name: /^Publish$/ }).click();
   await page.getByRole('menuitem', { name: 'Publish now' }).click();
-  await page.getByText(/Entry published/i).first().waitFor({ timeout: 30000 });
+  await page
+    .getByText(/Entry published/i)
+    .first()
+    .waitFor({ timeout: 30000 });
 }
 
 async function selectOption(page: Page, label: string, option: string) {
@@ -250,7 +272,7 @@ async function main() {
     await page.keyboard.press('Enter');
 
     log('Previewing the unpublished article in the dashboard');
-    const preview = page.frameLocator('iframe').first();
+    const preview = page.locator('iframe').first().contentFrame();
     await preview.locator('h1', { hasText: TITLE }).waitFor({ timeout: 10000 });
     check('live preview shows the article title', true);
     check('live preview shows the body text', (await preview.locator('.tt-prose').innerText()).includes(CANARY));
@@ -281,7 +303,10 @@ async function main() {
     await page.getByLabel('Title', { exact: true }).fill(UPDATED_TITLE);
     await save(page);
     await buildMain(page);
-    check('unpublished edit does not change the live article', dist(`${CATEGORY}/${SLUG}/index.html`).includes(`>${TITLE}<`));
+    check(
+      'unpublished edit does not change the live article',
+      dist(`${CATEGORY}/${SLUG}/index.html`).includes(`>${TITLE}<`),
+    );
     await openEntry(page);
     await publishNow(page);
     await buildMain(page);

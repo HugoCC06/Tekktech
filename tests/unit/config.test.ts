@@ -6,13 +6,20 @@ import { articleTypes, author, categories, navigation } from '../../src/site.con
 import { reviewJsonLd, serializeJsonLd } from '../../src/lib/structured-data.ts';
 
 const cms = buildCmsConfig();
-type CmsField = { name: string; widget: string; options?: { value: string }[]; default?: unknown; pattern?: [string, string] };
+type CmsField = {
+  name: string;
+  widget: string;
+  options?: { value: string }[];
+  default?: unknown;
+  pattern?: [string, string];
+};
 const allArticles = cms.collections.find((collection) => collection.name === 'articles')!;
 const fields = allArticles.fields as CmsField[];
 const field = (name: string) => fields.find((item) => item.name === name)!;
 
 // Build the real article schema with a stand-in for Astro's image() helper.
-const schemaFactory = (collections.articles as unknown as { schema: (ctx: { image: () => z.ZodType }) => z.ZodObject }).schema;
+const schemaFactory = (collections.articles as unknown as { schema: (ctx: { image: () => z.ZodType }) => z.ZodObject })
+  .schema;
 const articleSchema = schemaFactory({ image: () => z.string() });
 
 const validArticle = {
@@ -80,11 +87,19 @@ describe('article schema', () => {
   });
 
   it('treats an empty review block written by the CMS as absent', () => {
-    expect(articleSchema.parse({ ...validArticle, review: { handsOn: false, productName: '' } }).review).toBeUndefined();
+    expect(
+      articleSchema.parse({ ...validArticle, review: { handsOn: false, productName: '' } }).review,
+    ).toBeUndefined();
   });
 
   it('treats blank optional CMS fields as absent', () => {
-    const data = articleSchema.parse({ ...validArticle, updatedDate: '', seoTitle: '', canonicalUrl: null, tags: null });
+    const data = articleSchema.parse({
+      ...validArticle,
+      updatedDate: '',
+      seoTitle: '',
+      canonicalUrl: null,
+      tags: null,
+    });
     expect(data.updatedDate).toBeUndefined();
     expect(data.seoTitle).toBeUndefined();
     expect(data.tags).toEqual([]);
@@ -98,7 +113,10 @@ describe('article schema', () => {
     const review = { productName: 'Thing', handsOn: true };
     expect(() => articleSchema.parse({ ...validArticle, review: { ...review, score: 11 } })).toThrow();
     expect(() => articleSchema.parse({ ...validArticle, review: { ...review, score: 7.3 } })).toThrow();
-    expect(articleSchema.parse({ ...validArticle, review: { ...review, score: 7.5 } }).review?.score).toBe(7.5);
+    const parsed = articleSchema.parse({ ...validArticle, review: { ...review, score: 7.5 } }) as {
+      review?: { score?: number };
+    };
+    expect(parsed.review?.score).toBe(7.5);
   });
 });
 
@@ -109,7 +127,9 @@ describe('CMS configuration matches the content schema', () => {
   });
 
   it('offers exactly the configured categories and types', () => {
-    expect(field('category').options?.map((option) => option.value)).toEqual(categories.map((category) => category.slug));
+    expect(field('category').options?.map((option) => option.value)).toEqual(
+      categories.map((category) => category.slug),
+    );
     expect(field('type').options?.map((option) => option.value)).toEqual(articleTypes.map((type) => type.value));
   });
 
@@ -118,7 +138,11 @@ describe('CMS configuration matches the content schema', () => {
   });
 
   it('offers only the three supported statuses', () => {
-    expect(field('status').options?.map((option) => option.value).sort()).toEqual(['archived', 'draft', 'published']);
+    expect(
+      field('status')
+        .options?.map((option) => option.value)
+        .sort(),
+    ).toEqual(['archived', 'draft', 'published']);
   });
 
   it('has a template-backed collection for every article type', () => {
@@ -154,7 +178,9 @@ describe('structured data', () => {
   });
 
   it('never emits aggregate ratings', () => {
-    expect(JSON.stringify(reviewJsonLd({ ...base, handsOn: true, score: 8, demo: false }, site))).not.toContain('aggregateRating');
+    expect(JSON.stringify(reviewJsonLd({ ...base, handsOn: true, score: 8, demo: false }, site))).not.toContain(
+      'aggregateRating',
+    );
   });
 
   it('escapes markup when embedding JSON-LD', () => {

@@ -89,35 +89,31 @@ const graph = serializeJsonLd([organizationJsonLd(siteUrl), websiteJsonLd(siteUr
     <meta name="twitter:title" content={title ?? fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
-    {
-      article && (
-        <>
-          <meta property="article:published_time" content={article.published.toISOString()} />
-          <meta property="article:modified_time" content={article.modified.toISOString()} />
-          <meta property="article:section" content={article.section} />
-          {article.tags.map((tag) => (
-            <meta property="article:tag" content={tag} />
-          ))}
-        </>
-      )
-    }
+    {article && (
+      <>
+        <meta property="article:published_time" content={article.published.toISOString()} />
+        <meta property="article:modified_time" content={article.modified.toISOString()} />
+        <meta property="article:section" content={article.section} />
+        {article.tags.map((tag) => (
+          <meta property="article:tag" content={tag} />
+        ))}
+      </>
+    )}
 
     <script type="application/ld+json" set:html={graph} />
     <slot name="head" />
     <Analytics />
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    {
-      isPreviewBuild && (
-        <div class="preview-banner" role="note">
-          <Icon name="info" />
-          <span>
-            Preview deployment — not the live site. This page is hidden from search engines.
-          </span>
-        </div>
-      )
-    }
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    {isPreviewBuild && (
+      <div class="preview-banner" role="note">
+        <Icon name="info" />
+        <span>Preview deployment — not the live site. This page is hidden from search engines.</span>
+      </div>
+    )}
     <Header />
     <main id="main" tabindex="-1">
       <slot />

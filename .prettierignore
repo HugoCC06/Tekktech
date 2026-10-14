@@ -1,0 +1,13 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+public/admin/vendor/
+public/admin/cms-config.json
+public/brand/
+public/favicon.svg
+src/assets/brand/wordmark.json
+src/content/
+content-templates/
+test-results/
+playwright-report/

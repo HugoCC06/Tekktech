@@ -14,11 +14,9 @@ import { rehypeArticle } from './src/lib/markdown/rehype-article.ts';
  * are marked noindex and robots.txt disallows crawling.
  */
 const branch = process.env.CF_PAGES_BRANCH ?? '';
-const isPreview =
-  process.env.DEPLOY_ENV === 'preview' || (branch !== '' && branch !== site.productionBranch);
+const isPreview = process.env.DEPLOY_ENV === 'preview' || (branch !== '' && branch !== site.productionBranch);
 
-const siteUrl =
-  process.env.SITE_URL || (isPreview && process.env.CF_PAGES_URL) || site.defaultUrl;
+const siteUrl = process.env.SITE_URL || (isPreview && process.env.CF_PAGES_URL) || site.defaultUrl;
 
 /** Optional base path, e.g. "/tekktech" when served from a sub-directory. */
 const base = process.env.BASE_PATH || '/';

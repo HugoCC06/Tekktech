@@ -15,22 +15,24 @@ const recent = (await getPublishedArticles()).slice(0, 3);
       The link may be broken, or the article may have moved or been removed. Try searching, or start from one of these.
     </p>
     <div class="not-found__actions">
-      <a class="button" href={withBase('/search/')}>Search articles</a>
-      <a class="button button--ghost" href={withBase('/')}>Go to the homepage</a>
+      <a class="button" href={withBase('/search/')}>
+        Search articles
+      </a>
+      <a class="button button--ghost" href={withBase('/')}>
+        Go to the homepage
+      </a>
     </div>
 
-    {
-      recent.length > 0 && (
-        <section class="not-found__recent" aria-labelledby="recent-title">
-          <h2 id="recent-title">Recent articles</h2>
-          <div class="card-grid">
-            {recent.map((article) => (
-              <ArticleCard article={article} />
-            ))}
-          </div>
-        </section>
-      )
-    }
+    {recent.length > 0 && (
+      <section class="not-found__recent" aria-labelledby="recent-title">
+        <h2 id="recent-title">Recent articles</h2>
+        <div class="card-grid">
+          {recent.map((article) => (
+            <ArticleCard article={article} />
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 </BaseLayout>
 

@@ -116,11 +116,10 @@ const jsonLd = [
   jsonLd={jsonLd}
   article={{ published: data.publishDate, modified, section: category.name, tags: data.tags }}
 >
-  <article
-    class="article"
-    data-pagefind-body
-    data-pagefind-meta={`category:${category.name}, type:${typeLabel(data.type)}, date:${formatDate(data.publishDate)}`}
-  >
+  <article class="article" data-pagefind-body>
+    <span hidden data-pagefind-meta={`category:${category.name}`}></span>
+    <span hidden data-pagefind-meta={`type:${typeLabel(data.type)}`}></span>
+    <span hidden data-pagefind-meta={`date:${formatDate(data.publishDate)}`}></span>
     <div class="container article__top">
       <div data-pagefind-ignore>
         <Breadcrumbs items={breadcrumbs} />
@@ -129,25 +128,30 @@ const jsonLd = [
       <header class="article__header">
         <p class="eyebrow" data-pagefind-ignore>
           <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
-          <span class="eyebrow__sep" aria-hidden="true">/</span>
+          <span class="eyebrow__sep" aria-hidden="true">
+            /
+          </span>
           <span class="eyebrow__muted">{typeLabel(data.type)}</span>
         </p>
-        <h1 class="article__title" data-pagefind-meta="title">{data.title}</h1>
+        <h1 class="article__title" data-pagefind-meta="title">
+          {data.title}
+        </h1>
         <p class="article__standfirst">{data.excerpt}</p>
 
         <div class="article__byline" data-pagefind-ignore>
           <div class="article__byline-text">
             <p>
-              By <a href={withBase(author.url)} rel="author">{author.name}</a>
+              By{' '}
+              <a href={withBase(author.url)} rel="author">
+                {author.name}
+              </a>
             </p>
             <ArticleMeta article={article} variant="full" />
-            {
-              showUpdated && data.updatedDate && (
-                <p class="article__updated">
-                  Updated <time datetime={isoDate(data.updatedDate)}>{formatDate(data.updatedDate)}</time>
-                </p>
-              )
-            }
+            {showUpdated && data.updatedDate && (
+              <p class="article__updated">
+                Updated <time datetime={isoDate(data.updatedDate)}>{formatDate(data.updatedDate)}</time>
+              </p>
+            )}
           </div>
           <ShareControls url={pageUrl} title={data.title} label="Share" />
         </div>
@@ -162,15 +166,13 @@ const jsonLd = [
             priority
           />
         </div>
-        {
-          data.image && (data.imageCaption || data.imageCredit || data.imageIsAiGenerated) && (
-            <figcaption class="article__caption">
-              {data.imageCaption && <span>{data.imageCaption}</span>}
-              {data.imageIsAiGenerated && <span class="article__credit">AI-generated illustration</span>}
-              {data.imageCredit && <span class="article__credit">{data.imageCredit}</span>}
-            </figcaption>
-          )
-        }
+        {data.image && (data.imageCaption || data.imageCredit || data.imageIsAiGenerated) && (
+          <figcaption class="article__caption">
+            {data.imageCaption && <span>{data.imageCaption}</span>}
+            {data.imageIsAiGenerated && <span class="article__credit">AI-generated illustration</span>}
+            {data.imageCredit && <span class="article__credit">{data.imageCredit}</span>}
+          </figcaption>
+        )}
       </figure>
     </div>
 
@@ -195,33 +197,31 @@ const jsonLd = [
           <Content />
         </div>
 
-        {
-          data.review && (data.review.methodology || data.review.alternatives.length > 0) && (
-            <section class="article__review-extra" aria-label="Review details">
-              {data.review.methodology && (
-                <div>
-                  <h2>How we assessed it</h2>
-                  <p>{data.review.methodology}</p>
-                </div>
-              )}
-              {data.review.alternatives.length > 0 && (
-                <div>
-                  <h2>Alternatives to consider</h2>
-                  <ul>
-                    {data.review.alternatives.map((alternative) => (
-                      <li>
-                        <a href={alternative.url} rel="noopener">
-                          {alternative.label}
-                        </a>
-                        {alternative.note && <span> — {alternative.note}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </section>
-          )
-        }
+        {data.review && (data.review.methodology || data.review.alternatives.length > 0) && (
+          <section class="article__review-extra" aria-label="Review details">
+            {data.review.methodology && (
+              <div>
+                <h2>How we assessed it</h2>
+                <p>{data.review.methodology}</p>
+              </div>
+            )}
+            {data.review.alternatives.length > 0 && (
+              <div>
+                <h2>Alternatives to consider</h2>
+                <ul>
+                  {data.review.alternatives.map((alternative) => (
+                    <li>
+                      <a href={alternative.url} rel="noopener">
+                        {alternative.label}
+                      </a>
+                      {alternative.note && <span> — {alternative.note}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        )}
 
         <div data-pagefind-ignore>
           <AffiliateLinks links={data.affiliateLinks} />
@@ -231,24 +231,18 @@ const jsonLd = [
           <Sources sources={data.sources} />
         </div>
 
-        {
-          data.tags.length > 0 && (
-            <div class="article__tags" data-pagefind-ignore>
-              <h2 class="visually-hidden">Topics</h2>
-              <ul>
-                {data.tags.map((tag) => (
-                  <li>
-                    {indexableTags.has(tag) ? (
-                      <a href={withBase(`/tags/${tagSlug(tag)}/`)}>{tag}</a>
-                    ) : (
-                      <span>{tag}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )
-        }
+        {data.tags.length > 0 && (
+          <div class="article__tags" data-pagefind-ignore>
+            <h2 class="visually-hidden">Topics</h2>
+            <ul>
+              {data.tags.map((tag) => (
+                <li>
+                  {indexableTags.has(tag) ? <a href={withBase(`/tags/${tagSlug(tag)}/`)}>{tag}</a> : <span>{tag}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div class="article__footer-share" data-pagefind-ignore>
           <ShareControls url={pageUrl} title={data.title} />
@@ -364,12 +358,14 @@ const jsonLd = [
 
   .article__layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-8);
     margin-top: var(--space-10);
   }
 
   .article__main {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
     min-width: 0;
     max-width: var(--measure);

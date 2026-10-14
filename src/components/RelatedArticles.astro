@@ -10,15 +10,13 @@ interface Props {
 const { articles } = Astro.props;
 ---
 
-{
-  articles.length > 0 && (
-    <section class="related" aria-labelledby="related-title">
-      <SectionHeader title="Keep reading" id="related-title" link={{ href: '/articles/', label: 'All articles' }} />
-      <div class="card-grid">
-        {articles.map((article) => (
-          <ArticleCard article={article} headingLevel={3} />
-        ))}
-      </div>
-    </section>
-  )
-}
+{articles.length > 0 && (
+  <section class="related" aria-labelledby="related-title">
+    <SectionHeader title="Keep reading" id="related-title" link={{ href: '/articles/', label: 'All articles' }} />
+    <div class="card-grid">
+      {articles.map((article) => (
+        <ArticleCard article={article} headingLevel={3} />
+      ))}
+    </div>
+  </section>
+)}

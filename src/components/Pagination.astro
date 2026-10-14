@@ -18,43 +18,41 @@ const pageHref = (page: number) => withBase(page === 1 ? basePath : `${basePath}
 const pages = Array.from({ length: total }, (_, index) => index + 1);
 ---
 
-{
-  total > 1 && (
-    <nav class="pagination" aria-label="Pagination">
-      {current > 1 ? (
-        <a class="pagination__step" href={pageHref(current - 1)} rel="prev">
-          <Icon name="arrow-left" /> Newer
-        </a>
-      ) : (
-        <span />
-      )}
-      <ol class="pagination__pages">
-        {pages.map((page) => (
-          <li>
-            {page === current ? (
-              <span class="pagination__page" aria-current="page">
-                <span class="visually-hidden">Page </span>
-                {page}
-              </span>
-            ) : (
-              <a class="pagination__page" href={pageHref(page)}>
-                <span class="visually-hidden">Page </span>
-                {page}
-              </a>
-            )}
-          </li>
-        ))}
-      </ol>
-      {current < total ? (
-        <a class="pagination__step" href={pageHref(current + 1)} rel="next">
-          Older <Icon name="arrow-right" />
-        </a>
-      ) : (
-        <span />
-      )}
-    </nav>
-  )
-}
+{total > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    {current > 1 ? (
+      <a class="pagination__step" href={pageHref(current - 1)} rel="prev">
+        <Icon name="arrow-left" /> Newer
+      </a>
+    ) : (
+      <span />
+    )}
+    <ol class="pagination__pages">
+      {pages.map((page) => (
+        <li>
+          {page === current ? (
+            <span class="pagination__page" aria-current="page">
+              <span class="visually-hidden">Page </span>
+              {page}
+            </span>
+          ) : (
+            <a class="pagination__page" href={pageHref(page)}>
+              <span class="visually-hidden">Page </span>
+              {page}
+            </a>
+          )}
+        </li>
+      ))}
+    </ol>
+    {current < total ? (
+      <a class="pagination__step" href={pageHref(current + 1)} rel="next">
+        Older <Icon name="arrow-right" />
+      </a>
+    ) : (
+      <span />
+    )}
+  </nav>
+)}
 
 <style>
   .pagination {

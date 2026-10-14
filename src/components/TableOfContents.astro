@@ -14,26 +14,24 @@ interface Props {
 const items = Astro.props.headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
-{
-  items.length >= 2 && (
-    <nav class="toc" aria-labelledby="toc-title" data-toc>
-      <details class="toc__details" open data-toc-details>
-        <summary class="toc__summary">
-          <span id="toc-title">In this article</span>
-        </summary>
-        <ol class="toc__list">
-          {items.map((heading) => (
-            <li class:list={['toc__item', `toc__item--h${heading.depth}`]}>
-              <a href={`#${heading.slug}`} data-toc-link={heading.slug}>
-                {heading.text}
-              </a>
-            </li>
-          ))}
-        </ol>
-      </details>
-    </nav>
-  )
-}
+{items.length >= 2 && (
+  <nav class="toc" aria-labelledby="toc-title" data-toc>
+    <details class="toc__details" open data-toc-details>
+      <summary class="toc__summary">
+        <span id="toc-title">In this article</span>
+      </summary>
+      <ol class="toc__list">
+        {items.map((heading) => (
+          <li class:list={['toc__item', `toc__item--h${heading.depth}`]}>
+            <a href={`#${heading.slug}`} data-toc-link={heading.slug}>
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  </nav>
+)}
 
 <script>
   const toc = document.querySelector<HTMLElement>('[data-toc]');

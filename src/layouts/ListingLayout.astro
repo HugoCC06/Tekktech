@@ -77,47 +77,47 @@ const [lead, ...rest] = articles;
       </p>
     </header>
 
-    {
-      showCategorySwitcher && (
-        <nav class="category-switcher" aria-label="Categories">
-          <ul>
-            {categories.map((category) => (
-              <li>
-                <a
-                  href={withBase(`/${category.slug}/`)}
-                  aria-current={currentCategory === category.slug ? 'page' : undefined}
-                >
-                  {category.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )
-    }
+    {showCategorySwitcher && (
+      <nav class="category-switcher" aria-label="Categories">
+        <ul>
+          {categories.map((category) => (
+            <li>
+              <a
+                href={withBase(`/${category.slug}/`)}
+                aria-current={currentCategory === category.slug ? 'page' : undefined}
+              >
+                {category.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
 
-    {
-      articles.length === 0 ? (
-        <EmptyState
-          title="Nothing published here yet"
-          message={emptyMessage}
-          action={{ href: '/articles/', label: 'Browse all articles' }}
-        />
-      ) : (
-        <>
-          {page === 1 && lead && (
-            <div class="listing__lead">
-              <ArticleCard article={lead} headingLevel={2} sizes="(min-width: 76rem) 760px, (min-width: 48rem) 60vw, 100vw" />
-            </div>
-          )}
-          <div class="card-grid">
-            {(page === 1 ? rest : articles).map((article) => (
-              <ArticleCard article={article} headingLevel={2} />
-            ))}
+    {articles.length === 0 ? (
+      <EmptyState
+        title="Nothing published here yet"
+        message={emptyMessage}
+        action={{ href: '/articles/', label: 'Browse all articles' }}
+      />
+    ) : (
+      <>
+        {page === 1 && lead && (
+          <div class="listing__lead">
+            <ArticleCard
+              article={lead}
+              headingLevel={2}
+              sizes="(min-width: 76rem) 760px, (min-width: 48rem) 60vw, 100vw"
+            />
           </div>
-        </>
-      )
-    }
+        )}
+        <div class="card-grid">
+          {(page === 1 ? rest : articles).map((article) => (
+            <ArticleCard article={article} headingLevel={2} />
+          ))}
+        </div>
+      </>
+    )}
 
     <Pagination basePath={basePath} current={page} total={totalPages} />
     <slot />

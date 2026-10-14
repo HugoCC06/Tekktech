@@ -26,7 +26,9 @@ const category = getCategory(article.data.category);
   <div class="featured__body">
     <p class="eyebrow featured__eyebrow">
       <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
-      <span class="eyebrow__sep" aria-hidden="true">/</span>
+      <span class="eyebrow__sep" aria-hidden="true">
+        /
+      </span>
       <span class="eyebrow__muted">{typeLabel(article.data.type)}</span>
     </p>
     <h2 class="featured__title">

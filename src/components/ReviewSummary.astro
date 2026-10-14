@@ -20,87 +20,81 @@ const showScore = review.handsOn && typeof review.score === 'number';
   <header class="review-summary__header">
     <div>
       <p class="review-summary__kicker">At a glance</p>
-      <h2 id="review-summary-title" class="review-summary__product">{review.productName}</h2>
+      <h2 id="review-summary-title" class="review-summary__product">
+        {review.productName}
+      </h2>
       {review.productCategory && <p class="review-summary__category">{review.productCategory}</p>}
     </div>
-    {
-      showScore && (
-        <div class="review-summary__score" aria-label={`Score: ${review.score} out of 10`}>
-          <span class="review-summary__score-value">{review.score}</span>
-          <span class="review-summary__score-max">/10</span>
-        </div>
-      )
-    }
+    {showScore && (
+      <div class="review-summary__score" aria-label={`Score: ${review.score} out of 10`}>
+        <span class="review-summary__score-value">{review.score}</span>
+        <span class="review-summary__score-max">/10</span>
+      </div>
+    )}
   </header>
 
   {review.summary && <p class="review-summary__verdict">{review.summary}</p>}
 
-  {
-    (review.strengths.length > 0 || review.weaknesses.length > 0) && (
-      <div class="review-summary__lists">
-        {review.strengths.length > 0 && (
-          <div>
-            <h3>Strengths</h3>
-            <ul class="review-summary__list review-summary__list--pro">
-              {review.strengths.map((item) => (
-                <li>
-                  <Icon name="plus" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {review.weaknesses.length > 0 && (
-          <div>
-            <h3>Weaknesses</h3>
-            <ul class="review-summary__list review-summary__list--con">
-              {review.weaknesses.map((item) => (
-                <li>
-                  <Icon name="minus" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    )
-  }
+  {(review.strengths.length > 0 || review.weaknesses.length > 0) && (
+    <div class="review-summary__lists">
+      {review.strengths.length > 0 && (
+        <div>
+          <h3>Strengths</h3>
+          <ul class="review-summary__list review-summary__list--pro">
+            {review.strengths.map((item) => (
+              <li>
+                <Icon name="plus" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {review.weaknesses.length > 0 && (
+        <div>
+          <h3>Weaknesses</h3>
+          <ul class="review-summary__list review-summary__list--con">
+            {review.weaknesses.map((item) => (
+              <li>
+                <Icon name="minus" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  )}
 
-  {
-    (review.bestFor || review.avoidIf) && (
-      <dl class="review-summary__fit">
-        {review.bestFor && (
-          <div>
-            <dt>Consider it if</dt>
-            <dd>{review.bestFor}</dd>
-          </div>
-        )}
-        {review.avoidIf && (
-          <div>
-            <dt>Look elsewhere if</dt>
-            <dd>{review.avoidIf}</dd>
-          </div>
-        )}
-      </dl>
-    )
-  }
+  {(review.bestFor || review.avoidIf) && (
+    <dl class="review-summary__fit">
+      {review.bestFor && (
+        <div>
+          <dt>Consider it if</dt>
+          <dd>{review.bestFor}</dd>
+        </div>
+      )}
+      {review.avoidIf && (
+        <div>
+          <dt>Look elsewhere if</dt>
+          <dd>{review.avoidIf}</dd>
+        </div>
+      )}
+    </dl>
+  )}
 
   <p class="review-summary__basis">
     <Icon name="info" />
-    {
-      review.handsOn ? (
-        <span>
-          We used this product ourselves. <a href={withBase('/how-we-review/')}>How we review</a>.
-        </span>
-      ) : (
-        <span>
-          This assessment is based on research into published specifications and documentation, not hands-on
-          testing. <a href={withBase('/how-we-review/')}>How we review</a>.
-        </span>
-      )
-    }
+    {review.handsOn ? (
+      <span>
+        We used this product ourselves. <a href={withBase('/how-we-review/')}>How we review</a>.
+      </span>
+    ) : (
+      <span>
+        This assessment is based on research into published specifications and documentation, not hands-on testing.{' '}
+        <a href={withBase('/how-we-review/')}>How we review</a>.
+      </span>
+    )}
   </p>
 </aside>
 

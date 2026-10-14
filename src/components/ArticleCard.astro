@@ -36,28 +36,26 @@ const category = getCategory(article.data.category);
 ---
 
 <article class:list={['card', `card--${variant}`]}>
-  {
-    variant !== 'compact' && (
-      <div class="card__media">
-        <ArticleImage
-          article={article}
-          sizes={variant === 'row' ? '(min-width: 48rem) 180px, 120px' : sizes}
-          widths={variant === 'row' ? [240, 360] : undefined}
-          decorative
-        />
-      </div>
-    )
-  }
+  {variant !== 'compact' && (
+    <div class="card__media">
+      <ArticleImage
+        article={article}
+        sizes={variant === 'row' ? '(min-width: 48rem) 180px, 120px' : sizes}
+        widths={variant === 'row' ? [240, 360] : undefined}
+        decorative
+      />
+    </div>
+  )}
   <div class="card__body">
     <p class="eyebrow card__eyebrow">
-      {
-        showCategory && (
-          <>
-            <a href={withBase(`/${category.slug}/`)}>{category.shortName}</a>
-            <span class="eyebrow__sep" aria-hidden="true">/</span>
-          </>
-        )
-      }
+      {showCategory && (
+        <>
+          <a href={withBase(`/${category.slug}/`)}>{category.shortName}</a>
+          <span class="eyebrow__sep" aria-hidden="true">
+            /
+          </span>
+        </>
+      )}
       <span class="eyebrow__muted">{typeLabel(article.data.type)}</span>
     </p>
     <Heading class="card__title">

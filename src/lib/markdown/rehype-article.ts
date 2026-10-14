@@ -9,7 +9,7 @@ function isExternal(href: string) {
 }
 
 function classList(node: Element): string[] {
-  const value = node.properties.className;
+  const value: unknown = node.properties.className;
   return Array.isArray(value) ? value.map(String) : typeof value === 'string' ? value.split(' ') : [];
 }
 

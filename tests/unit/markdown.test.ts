@@ -35,7 +35,9 @@ describe('article Markdown sanitisation', () => {
   });
 
   it('removes inline event handlers and iframes', async () => {
-    const { html } = await render('<img src="x.png" onerror="alert(1)">\n\n<iframe src="https://evil.example"></iframe>');
+    const { html } = await render(
+      '<img src="x.png" onerror="alert(1)">\n\n<iframe src="https://evil.example"></iframe>',
+    );
     expect(html).not.toMatch(/onerror|<iframe/);
   });
 
@@ -61,7 +63,9 @@ describe('article Markdown sanitisation', () => {
 describe('article Markdown refinements', () => {
   it('wraps tables in a focusable scroll region', async () => {
     const { html } = await render('| A | B |\n| --- | --- |\n| 1 | 2 |');
-    expect(html).toMatch(/<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table">\s*<table>/);
+    expect(html).toMatch(
+      /<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table">\s*<table>/,
+    );
   });
 
   it('adds rel="noopener" to external links', async () => {

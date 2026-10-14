@@ -7,7 +7,11 @@
   gap: 1rem;
   background: #fafaf7;
   color: #444a55;
-  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font:
+    15px/1.5 system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   z-index: 1;
 }
 .tt-admin-loading[hidden] {

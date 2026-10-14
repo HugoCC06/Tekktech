@@ -12,23 +12,21 @@ const { counts } = Astro.props;
 ---
 
 <ul class="category-tiles">
-  {
-    categories.map((category, index) => (
-      <li class="category-tile" style={`--tile-index: ${index}`}>
-        <a href={withBase(`/${category.slug}/`)}>
-          <span class="category-tile__index" aria-hidden="true">
-            0{index + 1}
-          </span>
-          <span class="category-tile__name">{category.name}</span>
-          <span class="category-tile__summary">{category.summary}</span>
-          <span class="category-tile__footer">
-            <span>{counts[category.slug] === 1 ? '1 article' : `${counts[category.slug] ?? 0} articles`}</span>
-            <Icon name="arrow-right" />
-          </span>
-        </a>
-      </li>
-    ))
-  }
+  {categories.map((category, index) => (
+    <li class="category-tile" style={`--tile-index: ${index}`}>
+      <a href={withBase(`/${category.slug}/`)}>
+        <span class="category-tile__index" aria-hidden="true">
+          0{index + 1}
+        </span>
+        <span class="category-tile__name">{category.name}</span>
+        <span class="category-tile__summary">{category.summary}</span>
+        <span class="category-tile__footer">
+          <span>{counts[category.slug] === 1 ? '1 article' : `${counts[category.slug] ?? 0} articles`}</span>
+          <Icon name="arrow-right" />
+        </span>
+      </a>
+    </li>
+  ))}
 </ul>
 
 <style>

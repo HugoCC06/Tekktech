@@ -22,55 +22,50 @@ const showPlaceholder = config.provider === 'none' && (isDevServer || isPreviewB
 const fieldId = `newsletter-email-${variant}`;
 ---
 
-{
-  config.provider !== 'none' && (
-    <section class:list={['newsletter', `newsletter--${variant}`]} aria-labelledby={`${fieldId}-title`}>
-      <div class="newsletter__copy">
-        <h2 id={`${fieldId}-title`}>The TekkTech newsletter</h2>
-        <p>New reviews, guides and explainers, sent occasionally. No spam, no sponsored filler.</p>
+{config.provider !== 'none' && (
+  <section class:list={['newsletter', `newsletter--${variant}`]} aria-labelledby={`${fieldId}-title`}>
+    <div class="newsletter__copy">
+      <h2 id={`${fieldId}-title`}>The TekkTech newsletter</h2>
+      <p>New reviews, guides and explainers, sent occasionally. No spam, no sponsored filler.</p>
+    </div>
+    <form class="newsletter__form" method="post" action={config.action} data-newsletter-form novalidate>
+      <div class="newsletter__row">
+        <label class="visually-hidden" for={fieldId}>
+          Email address
+        </label>
+        <input
+          id={fieldId}
+          class="newsletter__input"
+          type="email"
+          name={config.emailField}
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+          aria-describedby={`${fieldId}-consent ${fieldId}-error`}
+        />
+        <button class="button button--accent" type="submit">
+          Subscribe
+        </button>
       </div>
-      <form class="newsletter__form" method="post" action={config.action} data-newsletter-form novalidate>
-        <div class="newsletter__row">
-          <label class="visually-hidden" for={fieldId}>
-            Email address
-          </label>
-          <input
-            id={fieldId}
-            class="newsletter__input"
-            type="email"
-            name={config.emailField}
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-            aria-describedby={`${fieldId}-consent ${fieldId}-error`}
-          />
-          <button class="button button--accent" type="submit">
-            Subscribe
-          </button>
-        </div>
-        <p id={`${fieldId}-error`} class="newsletter__error" role="alert" hidden />
-        <p id={`${fieldId}-consent`} class="newsletter__consent">
-          By subscribing you agree to receive the newsletter by email. Your address is handled by{' '}
-          {config.providerName} and you can unsubscribe at any time. See our{' '}
-          <a href={withBase('/privacy/')}>privacy policy</a>.
-        </p>
-      </form>
-    </section>
-  )
-}
-
-{
-  showPlaceholder && (
-    <aside class:list={['newsletter-placeholder', `newsletter--${variant}`]} aria-label="Newsletter setup note">
-      <Icon name="mail" />
-      <p>
-        <strong>Newsletter placeholder (only visible in development and previews).</strong> Set
-        <code>PUBLIC_NEWSLETTER_PROVIDER</code> to enable signups — see “Newsletter” in the README. Readers see nothing
-        here until a provider is configured.
+      <p id={`${fieldId}-error`} class="newsletter__error" role="alert" hidden />
+      <p id={`${fieldId}-consent`} class="newsletter__consent">
+        By subscribing you agree to receive the newsletter by email. Your address is handled by {config.providerName}{' '}
+        and you can unsubscribe at any time. See our <a href={withBase('/privacy/')}>privacy policy</a>.
       </p>
-    </aside>
-  )
-}
+    </form>
+  </section>
+)}
+
+{showPlaceholder && (
+  <aside class:list={['newsletter-placeholder', `newsletter--${variant}`]} aria-label="Newsletter setup note">
+    <Icon name="mail" />
+    <p>
+      <strong>Newsletter placeholder (only visible in development and previews).</strong> Set
+      <code>PUBLIC_NEWSLETTER_PROVIDER</code> to enable signups — see “Newsletter” in the README. Readers see nothing
+      here until a provider is configured.
+    </p>
+  </aside>
+)}
 
 <script>
   document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((form) => {

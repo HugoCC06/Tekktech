@@ -67,13 +67,14 @@ function downloadDecap(): Buffer {
 function ensureDecapBundle() {
   if (existsSync(vendorFile) && sha384(readFileSync(vendorFile)) === DECAP_SHA384) return;
 
-  let bundle = existsSync(cacheFile) ? readFileSync(cacheFile) : undefined;
+  let bundle: Buffer | undefined = existsSync(cacheFile) ? readFileSync(cacheFile) : undefined;
   if (!bundle || sha384(bundle) !== DECAP_SHA384) {
     console.log(`[admin] Downloading Decap CMS ${DECAP_VERSION} from the npm registry…`);
     bundle = downloadDecap();
   }
 
-  const actual = sha384(bundle);
+  const verified: Buffer = bundle;
+  const actual = sha384(verified);
   if (actual !== DECAP_SHA384) {
     throw new Error(
       `[admin] Decap CMS bundle integrity check failed.\n  expected sha384-${DECAP_SHA384}\n  received sha384-${actual}\n` +
@@ -82,9 +83,9 @@ function ensureDecapBundle() {
   }
 
   mkdirSync(dirname(cacheFile), { recursive: true });
-  writeFileSync(cacheFile, bundle);
+  writeFileSync(cacheFile, verified);
   mkdirSync(vendorDir, { recursive: true });
-  writeFileSync(vendorFile, bundle);
+  writeFileSync(vendorFile, verified);
   console.log(`[admin] Decap CMS ${DECAP_VERSION} verified (sha384-${actual.slice(0, 12)}…)`);
 }
 

@@ -116,7 +116,8 @@ function devices(p: Palette, r: () => number) {
 function gaming(p: Palette, r: () => number) {
   const horizon = 520;
   const floor: string[] = [];
-  for (let i = -12; i <= 12; i++) floor.push(`<line x1="${800 + i * 30}" y1="${horizon}" x2="${800 + i * 220}" y2="${H}"/>`);
+  for (let i = -12; i <= 12; i++)
+    floor.push(`<line x1="${800 + i * 30}" y1="${horizon}" x2="${800 + i * 220}" y2="${H}"/>`);
   for (let j = 0; j < 7; j++) {
     const y = horizon + Math.pow(j / 6, 1.8) * (H - horizon);
     floor.push(`<line x1="0" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}"/>`);
@@ -149,7 +150,9 @@ function blocks(p: Palette, r: () => number) {
     const size = 150;
     if (i < count - 1) {
       const nx = 180 + (i + 1) * 270;
-      parts.push(`<line x1="${x + size}" y1="${y}" x2="${nx}" y2="${y}" stroke="${p.primary}" stroke-width="6" stroke-dasharray="2 14" stroke-linecap="round"/>`);
+      parts.push(
+        `<line x1="${x + size}" y1="${y}" x2="${nx}" y2="${y}" stroke="${p.primary}" stroke-width="6" stroke-dasharray="2 14" stroke-linecap="round"/>`,
+      );
     }
     const fill = i === 2 ? p.highlight : i % 2 ? p.light : p.primary;
     const top = i === 2 ? '#5C78FF' : i % 2 ? p.secondary : '#3A3F4B';
@@ -158,8 +161,12 @@ function blocks(p: Palette, r: () => number) {
         <path d="M${x} ${y - size / 2} l${size / 2} -40 h${size} l-${size / 2} 40 z" fill="${top}" transform="translate(-${size / 4} 0)"/>
         <rect x="${x - size / 4}" y="${y - size / 2}" width="${size}" height="${size}" fill="${fill}"/>
       </g>`);
-    parts.push(`<rect x="${x - size / 4 + 28}" y="${y - 22}" width="${size - 56}" height="12" rx="6" fill="${i % 2 ? p.secondary : p.light}" opacity="0.8"/>`);
-    parts.push(`<rect x="${x - size / 4 + 28}" y="${y + 4}" width="${(size - 56) * 0.6}" height="12" rx="6" fill="${i % 2 ? p.secondary : p.light}" opacity="0.5"/>`);
+    parts.push(
+      `<rect x="${x - size / 4 + 28}" y="${y - 22}" width="${size - 56}" height="12" rx="6" fill="${i % 2 ? p.secondary : p.light}" opacity="0.8"/>`,
+    );
+    parts.push(
+      `<rect x="${x - size / 4 + 28}" y="${y + 4}" width="${(size - 56) * 0.6}" height="12" rx="6" fill="${i % 2 ? p.secondary : p.light}" opacity="0.5"/>`,
+    );
   }
   return parts.join('');
 }
@@ -174,7 +181,8 @@ function workspace(p: Palette, r: () => number) {
     for (let j = 0; j < rows; j++) {
       const done = r() > 0.45;
       content += `<rect x="${x + 36}" y="${y + 110 + j * 74}" width="34" height="34" rx="9" fill="${done ? p.primary : p.light}" stroke="${p.secondary}" stroke-width="3"/>`;
-      if (done) content += `<path d="M${x + 44} ${y + 127 + j * 74} l8 8 l14 -16" fill="none" stroke="${p.light}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+      if (done)
+        content += `<path d="M${x + 44} ${y + 127 + j * 74} l8 8 l14 -16" fill="none" stroke="${p.light}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
       content += `<rect x="${x + 88}" y="${y + 120 + j * 74}" width="${110 + r() * 60}" height="14" rx="7" fill="${p.secondary}"/>`;
     }
     cards.push(`
@@ -191,7 +199,9 @@ function display(p: Palette, r: () => number) {
   const bars: string[] = [];
   for (let i = 0; i < 14; i++) {
     const h = 60 + r() * 220;
-    bars.push(`<rect x="${470 + i * 48}" y="${600 - h}" width="30" height="${h}" rx="6" fill="${i % 4 === 0 ? p.highlight : p.primary}" opacity="${0.55 + (i % 3) * 0.2}"/>`);
+    bars.push(
+      `<rect x="${470 + i * 48}" y="${600 - h}" width="30" height="${h}" rx="6" fill="${i % 4 === 0 ? p.highlight : p.primary}" opacity="${0.55 + (i % 3) * 0.2}"/>`,
+    );
   }
   return `
   <g filter="url(#shadow)">
@@ -207,7 +217,10 @@ function display(p: Palette, r: () => number) {
 function signal(p: Palette, r: () => number) {
   const rings: string[] = [];
   const cx = 800 + (r() * 100 - 50);
-  for (let i = 1; i <= 6; i++) rings.push(`<circle cx="${cx}" cy="470" r="${i * 85}" fill="none" stroke="${p.primary}" stroke-width="${i % 2 ? 3 : 1.5}" opacity="${1 - i * 0.13}"/>`);
+  for (let i = 1; i <= 6; i++)
+    rings.push(
+      `<circle cx="${cx}" cy="470" r="${i * 85}" fill="none" stroke="${p.primary}" stroke-width="${i % 2 ? 3 : 1.5}" opacity="${1 - i * 0.13}"/>`,
+    );
   return `${rings.join('')}
   <g filter="url(#shadow)">
     <rect x="${cx - 150}" y="320" width="300" height="300" rx="44" fill="${p.light}"/>
@@ -222,7 +235,9 @@ function signal(p: Palette, r: () => number) {
 function shield(p: Palette, r: () => number) {
   const dots: string[] = [];
   for (let i = 0; i < 40; i++) {
-    dots.push(`<circle cx="${(r() * W).toFixed(0)}" cy="${(r() * H).toFixed(0)}" r="${(2 + r() * 5).toFixed(1)}" fill="${p.secondary}" opacity="0.7"/>`);
+    dots.push(
+      `<circle cx="${(r() * W).toFixed(0)}" cy="${(r() * H).toFixed(0)}" r="${(2 + r() * 5).toFixed(1)}" fill="${p.secondary}" opacity="0.7"/>`,
+    );
   }
   return `${dots.join('')}
   <g filter="url(#shadow)">
@@ -273,7 +288,9 @@ function keyboard(p: Palette, r: () => number) {
       const x = startX + i * (key + gap);
       const y = 330 + row * (key + gap);
       keys.push(`<rect x="${x}" y="${y + 6}" width="${key}" height="${key}" rx="12" fill="#07080C"/>`);
-      keys.push(`<rect x="${x}" y="${y}" width="${key}" height="${key - 4}" rx="12" fill="${accent ? p.highlight : p.secondary}"/>`);
+      keys.push(
+        `<rect x="${x}" y="${y}" width="${key}" height="${key - 4}" rx="12" fill="${accent ? p.highlight : p.secondary}"/>`,
+      );
     }
   });
   keys.push(`<rect x="560" y="${330 + 4 * (key + gap)}" width="480" height="${key - 4}" rx="12" fill="${p.primary}"/>`);
@@ -335,7 +352,9 @@ async function render(dir: string, items: typeof fallbacks) {
   await mkdir(out, { recursive: true });
   for (const item of items) {
     const svg = compose(item.category, item.motif, item.file);
-    await sharp(Buffer.from(svg)).webp({ quality: 82, effort: 6 }).toFile(resolve(out, `${item.file}.webp`));
+    await sharp(Buffer.from(svg))
+      .webp({ quality: 82, effort: 6 })
+      .toFile(resolve(out, `${item.file}.webp`));
     console.log(`  ${dir}/${item.file}.webp`);
   }
 }

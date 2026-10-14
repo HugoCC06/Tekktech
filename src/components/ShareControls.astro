@@ -33,21 +33,19 @@ const networks = [
         <Icon name="share" />
       </button>
     </li>
-    {
-      networks.map((network) => (
-        <li>
-          <a
-            class="share__button"
-            href={network.href}
-            target={network.icon === 'mail' ? undefined : '_blank'}
-            rel="noopener noreferrer"
-            aria-label={`Share on ${network.name}`}
-          >
-            <Icon name={network.icon} />
-          </a>
-        </li>
-      ))
-    }
+    {networks.map((network) => (
+      <li>
+        <a
+          class="share__button"
+          href={network.href}
+          target={network.icon === 'mail' ? undefined : '_blank'}
+          rel="noopener noreferrer"
+          aria-label={`Share on ${network.name}`}
+        >
+          <Icon name={network.icon} />
+        </a>
+      </li>
+    ))}
     <li hidden data-share-copy-item>
       <button type="button" class="share__button share__button--copy" data-share-copy>
         <Icon name="link" />

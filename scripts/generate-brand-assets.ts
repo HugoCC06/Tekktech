@@ -14,7 +14,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import opentype from 'opentype.js';
+import opentype, { type Font } from 'opentype.js';
 import sharp from 'sharp';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -40,7 +40,7 @@ const TRACKING = -0.035 * SIZE;
  * path data. Glyphs are mapped per character (no OpenType shaping), which is
  * all a Latin wordmark needs.
  */
-function layout(font: opentype.Font, text: string, startX: number, size = SIZE, tracking = TRACKING) {
+function layout(font: Font, text: string, startX: number, size = SIZE, tracking = TRACKING) {
   let x = startX;
   const parts: string[] = [];
   const glyphs = [...text].map((char) => font.charToGlyph(char));

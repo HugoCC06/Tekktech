@@ -30,21 +30,19 @@ const providerConfigured = false; // Set to true once a provider's markup is add
 const render = (adsEnabled && providerConfigured) || isDevServer;
 ---
 
-{
-  render && (
-    <aside
-      class:list={['ad-slot', { 'ad-slot--placeholder': !providerConfigured }]}
-      style={`--ad-min-height: ${size.minHeight}`}
-      aria-label="Advertisement"
-      data-placement={placement}
-    >
-      <p class="ad-slot__label">Advertisement</p>
-      <div class="ad-slot__inner">
-        {!providerConfigured && <span class="ad-slot__dev">Ad placement: {size.label} (development only)</span>}
-      </div>
-    </aside>
-  )
-}
+{render && (
+  <aside
+    class:list={['ad-slot', { 'ad-slot--placeholder': !providerConfigured }]}
+    style={`--ad-min-height: ${size.minHeight}`}
+    aria-label="Advertisement"
+    data-placement={placement}
+  >
+    <p class="ad-slot__label">Advertisement</p>
+    <div class="ad-slot__inner">
+      {!providerConfigured && <span class="ad-slot__dev">Ad placement: {size.label} (development only)</span>}
+    </div>
+  </aside>
+)}
 
 <style>
   .ad-slot {

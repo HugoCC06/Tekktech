@@ -82,7 +82,15 @@ describe('paginate', () => {
 describe('pickRelated', () => {
   const make = (id: string, data: Partial<RelatableArticle['data']> = {}): RelatableArticle => ({
     id,
-    data: { slug: id, category: 'gaming', tags: [], type: 'guide', related: [], publishDate: new Date('2026-10-01'), ...data },
+    data: {
+      slug: id,
+      category: 'gaming',
+      tags: [],
+      type: 'guide',
+      related: [],
+      publishDate: new Date('2026-10-01'),
+      ...data,
+    },
   });
 
   it('puts editor-chosen articles first, in order', () => {

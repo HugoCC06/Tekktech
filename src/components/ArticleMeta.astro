@@ -15,16 +15,11 @@ const format = variant === 'full' ? formatDate : formatShortDate;
 
 <p class:list={['article-meta', `article-meta--${variant}`]}>
   <time datetime={isoDate(article.data.publishDate)}>{format(article.data.publishDate)}</time>
-  <span class="article-meta__sep" aria-hidden="true">·</span>
+  <span class="article-meta__sep" aria-hidden="true">
+    ·
+  </span>
   <span>{minutes} min read</span>
-  {
-    article.data.demo && (
-      <>
-        <span class="article-meta__sep" aria-hidden="true">·</span>
-        <span class="article-meta__demo">Demo</span>
-      </>
-    )
-  }
+  {article.data.demo && <span class="article-meta__demo">Demo</span>}
 </p>
 
 <style>
@@ -47,6 +42,7 @@ const format = variant === 'full' ? formatDate : formatShortDate;
   }
 
   .article-meta__demo {
+    margin-left: var(--space-1);
     padding: 0.05rem 0.45rem;
     border-radius: var(--radius-pill);
     background: var(--color-warning-soft);

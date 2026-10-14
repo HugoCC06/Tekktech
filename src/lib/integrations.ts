@@ -20,7 +20,9 @@ export function getAnalyticsConfig(): AnalyticsConfig {
   if (isDevServer || isPreviewBuild) return { provider: 'none' };
   switch (env.PUBLIC_ANALYTICS_PROVIDER) {
     case 'plausible':
-      return env.PUBLIC_PLAUSIBLE_DOMAIN ? { provider: 'plausible', domain: env.PUBLIC_PLAUSIBLE_DOMAIN } : { provider: 'none' };
+      return env.PUBLIC_PLAUSIBLE_DOMAIN
+        ? { provider: 'plausible', domain: env.PUBLIC_PLAUSIBLE_DOMAIN }
+        : { provider: 'none' };
     case 'cloudflare':
       return env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN
         ? { provider: 'cloudflare', token: env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN }
@@ -35,8 +37,7 @@ export function getAnalyticsConfig(): AnalyticsConfig {
 }
 
 export type NewsletterConfig =
-  | { provider: 'none' }
-  | { provider: 'buttondown' | 'form'; action: string; emailField: string; providerName: string };
+  { provider: 'none' } | { provider: 'buttondown' | 'form'; action: string; emailField: string; providerName: string };
 
 export function getNewsletterConfig(): NewsletterConfig {
   switch (env.PUBLIC_NEWSLETTER_PROVIDER) {

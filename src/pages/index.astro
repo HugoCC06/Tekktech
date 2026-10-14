@@ -20,17 +20,16 @@ const take = (list: Article[], count: number) => {
   return picked;
 };
 
-const lead = take(
-  [...articles.filter((article) => article.data.featured), ...articles],
-  1,
-)[0];
-const topStories = take(articles, 4);
+const lead = take([...articles.filter((article) => article.data.featured), ...articles], 1)[0];
+// Reviews are reserved before the "Latest" column so the buying-advice
+// section stays full while the publication only has a few articles.
 const reviewTypes = typesForHub('reviews');
 const guideTypes = typesForHub('guides');
 const reviews = take(
   articles.filter((article) => reviewTypes.includes(article.data.type)),
   3,
 );
+const topStories = take(articles, 4);
 const guides = take(
   articles.filter((article) => guideTypes.includes(article.data.type)),
   4,
@@ -54,32 +53,30 @@ const counts = Object.fromEntries(
       <p class="masthead__note">{site.tagline}.</p>
     </header>
 
-    {
-      !lead ? (
-        <EmptyState
-          title="The first articles are on their way"
-          message="TekkTech is getting ready to publish. Check back soon for reviews, comparisons and explainers."
-        />
-      ) : (
-        <section class="front" aria-label="Top stories">
-          <div class="front__lead">
-            <FeaturedStory article={lead} />
+    {!lead ? (
+      <EmptyState
+        title="The first articles are on their way"
+        message="TekkTech is getting ready to publish. Check back soon for reviews, comparisons and explainers."
+      />
+    ) : (
+      <section class="front" aria-label="Top stories">
+        <div class="front__lead">
+          <FeaturedStory article={lead} />
+        </div>
+        {topStories.length > 0 && (
+          <div class="front__side">
+            <h2 class="front__side-title">Latest</h2>
+            <ol class="front__list">
+              {topStories.map((article) => (
+                <li>
+                  <ArticleCard article={article} variant="row" headingLevel={3} />
+                </li>
+              ))}
+            </ol>
           </div>
-          {topStories.length > 0 && (
-            <div class="front__side">
-              <h2 class="front__side-title">Latest</h2>
-              <ol class="front__list">
-                {topStories.map((article) => (
-                  <li>
-                    <ArticleCard article={article} variant="row" headingLevel={3} />
-                  </li>
-                ))}
-              </ol>
-            </div>
-          )}
-        </section>
-      )
-    }
+        )}
+      </section>
+    )}
   </div>
 
   <section class="section" aria-labelledby="categories-title">
@@ -93,73 +90,67 @@ const counts = Object.fromEntries(
     </div>
   </section>
 
-  {
-    reviews.length > 0 && (
-      <section class="section" aria-labelledby="reviews-title">
-        <div class="container">
-          <SectionHeader
-            title="Reviews & buying advice"
-            id="reviews-title"
-            description="Reviews, comparisons and ranked guides that explain the trade-offs."
-            link={{ href: hubs.reviews.path, label: 'All reviews' }}
-          />
-          <div class="card-grid">
-            {reviews.map((article) => (
-              <ArticleCard article={article} />
-            ))}
-          </div>
+  {reviews.length > 0 && (
+    <section class="section" aria-labelledby="reviews-title">
+      <div class="container">
+        <SectionHeader
+          title="Reviews & buying advice"
+          id="reviews-title"
+          description="Reviews, comparisons and ranked guides that explain the trade-offs."
+          link={{ href: hubs.reviews.path, label: 'All reviews' }}
+        />
+        <div class="card-grid">
+          {reviews.map((article) => (
+            <ArticleCard article={article} />
+          ))}
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 
   <div class="container">
     <AdSlot placement="home-mid" />
   </div>
 
-  {
-    guides.length > 0 && (
-      <section class="section" aria-labelledby="guides-title">
-        <div class="container">
-          <SectionHeader
-            title="Guides & explainers"
-            id="guides-title"
-            description="Evergreen explanations of how technology works — and how to choose it."
-            link={{ href: hubs.guides.path, label: 'All guides' }}
-          />
-          <ol class="guides">
-            {guides.map((article, index) => (
-              <li class="guides__item">
-                <span class="guides__number" aria-hidden="true">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <ArticleCard article={article} variant="compact" showExcerpt />
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-    )
-  }
+  {guides.length > 0 && (
+    <section class="section" aria-labelledby="guides-title">
+      <div class="container">
+        <SectionHeader
+          title="Guides & explainers"
+          id="guides-title"
+          description="Evergreen explanations of how technology works — and how to choose it."
+          link={{ href: hubs.guides.path, label: 'All guides' }}
+        />
+        <ol class="guides">
+          {guides.map((article, index) => (
+            <li class="guides__item">
+              <span class="guides__number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <ArticleCard article={article} variant="compact" showExcerpt />
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
 
-  {
-    latest.length > 0 && (
-      <section class="section" aria-labelledby="latest-title">
-        <div class="container">
-          <SectionHeader
-            title="More from TekkTech"
-            id="latest-title"
-            link={{ href: '/articles/', label: 'Browse all' }}
-          />
-          <div class="card-grid">
-            {latest.map((article) => (
-              <ArticleCard article={article} />
-            ))}
-          </div>
+  {latest.length > 0 && (
+    <section class="section" aria-labelledby="latest-title">
+      <div class="container">
+        <SectionHeader
+          title="More from TekkTech"
+          id="latest-title"
+          link={{ href: '/articles/', label: 'Browse all' }}
+        />
+        <div class="card-grid">
+          {latest.map((article) => (
+            <ArticleCard article={article} />
+          ))}
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 
   <div class="container newsletter-wrap">
     <NewsletterSignup />
@@ -195,6 +186,7 @@ const counts = Object.fromEntries(
 
   .front {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
     padding-top: var(--space-8);
     border-top: 1px solid var(--color-ink);
@@ -211,6 +203,7 @@ const counts = Object.fromEntries(
 
   .front__list {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     padding: 0;
     list-style: none;
   }

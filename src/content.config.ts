@@ -123,7 +123,10 @@ const articles = defineCollection({
         updatedDate: optionalDate,
 
         // The public author is always TekkTech, whatever is entered.
-        author: z.unknown().optional().transform(() => author.name),
+        author: z
+          .unknown()
+          .optional()
+          .transform(() => author.name),
 
         image: z.preprocess(blankToUndefined, image().optional()),
         imageAlt: optionalText,

@@ -13,27 +13,27 @@ interface Props {
 const { links } = Astro.props;
 ---
 
-{
-  links.length > 0 && (
-    <section class="affiliate" aria-labelledby="affiliate-title">
-      <h2 id="affiliate-title">Where to buy</h2>
-      <ul>
-        {links.map((link) => (
-          <li>
-            <a class="affiliate__link" href={link.url} rel="sponsored nofollow noopener" target="_blank">
-              <span>
-                {link.label}
-                {link.retailer && <span class="affiliate__retailer">{link.retailer}</span>}
-              </span>
-              <Icon name="external" />
-            </a>
-          </li>
-        ))}
-      </ul>
-      <p class="affiliate__note">Affiliate links: TekkTech may earn a commission. Prices change frequently — check the retailer.</p>
-    </section>
-  )
-}
+{links.length > 0 && (
+  <section class="affiliate" aria-labelledby="affiliate-title">
+    <h2 id="affiliate-title">Where to buy</h2>
+    <ul>
+      {links.map((link) => (
+        <li>
+          <a class="affiliate__link" href={link.url} rel="sponsored nofollow noopener" target="_blank">
+            <span>
+              {link.label}
+              {link.retailer && <span class="affiliate__retailer">{link.retailer}</span>}
+            </span>
+            <Icon name="external" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="affiliate__note">
+      Affiliate links: TekkTech may earn a commission. Prices change frequently — check the retailer.
+    </p>
+  </section>
+)}
 
 <style>
   .affiliate {

@@ -21,27 +21,31 @@ interface Props {
 
 const fallbacks = import.meta.glob<{ default: ImageMetadata }>('../assets/images/fallback/*.webp', { eager: true });
 
-const { article, sizes, widths = [400, 640, 960, 1280], priority = false, class: className, decorative = false } =
-  Astro.props;
+const {
+  article,
+  sizes,
+  widths = [400, 640, 960, 1280],
+  priority = false,
+  class: className,
+  decorative = false,
+} = Astro.props;
 
 const fallback = fallbacks[`../assets/images/fallback/${article.data.category}.webp`]?.default;
 const src = article.data.image ?? fallback;
 const alt = decorative ? '' : article.data.image ? (article.data.imageAlt ?? '') : '';
 ---
 
-{
-  src && (
-    <Image
-      src={src}
-      alt={alt}
-      widths={widths.filter((width) => width <= src.width)}
-      sizes={sizes}
-      loading={priority ? 'eager' : 'lazy'}
-      fetchpriority={priority ? 'high' : 'auto'}
-      decoding={priority ? 'sync' : 'async'}
-      format="webp"
-      quality={78}
-      class={className}
-    />
-  )
-}
+{src && (
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths.filter((width) => width <= src.width)}
+    sizes={sizes}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : 'auto'}
+    decoding={priority ? 'sync' : 'async'}
+    format="webp"
+    quality={78}
+    class={className}
+  />
+)}

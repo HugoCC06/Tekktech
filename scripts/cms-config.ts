@@ -13,7 +13,10 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 type Field = Record<string, unknown>;
 
-const SLUG_PATTERN = ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Use lowercase letters, numbers and single hyphens only, e.g. best-budget-headphones'];
+const SLUG_PATTERN = [
+  '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+  'Use lowercase letters, numbers and single hyphens only, e.g. best-budget-headphones',
+];
 
 /** Relative to src/content/articles — the same path is written into frontmatter, which Astro resolves. */
 const MEDIA_FOLDER = '../../assets/images/articles';
@@ -74,12 +77,38 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
         required: false,
         hint: 'Optional. Only shown for hands-on reviews, following /how-we-review/. Leave empty otherwise.',
       },
-      { label: 'Strengths', name: 'strengths', widget: 'list', required: false, field: { label: 'Strength', name: 'item', widget: 'string' } },
-      { label: 'Weaknesses', name: 'weaknesses', widget: 'list', required: false, field: { label: 'Weakness', name: 'item', widget: 'string' } },
+      {
+        label: 'Strengths',
+        name: 'strengths',
+        widget: 'list',
+        required: false,
+        field: { label: 'Strength', name: 'item', widget: 'string' },
+      },
+      {
+        label: 'Weaknesses',
+        name: 'weaknesses',
+        widget: 'list',
+        required: false,
+        field: { label: 'Weakness', name: 'item', widget: 'string' },
+      },
       { label: 'Consider it if…', name: 'bestFor', widget: 'text', required: false },
       { label: 'Look elsewhere if…', name: 'avoidIf', widget: 'text', required: false },
-      { label: 'How we assessed it', name: 'methodology', widget: 'text', required: false, hint: 'What you used, for how long, or which sources you relied on.' },
-      { label: 'Review date', name: 'reviewDate', widget: 'datetime', required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' },
+      {
+        label: 'How we assessed it',
+        name: 'methodology',
+        widget: 'text',
+        required: false,
+        hint: 'What you used, for how long, or which sources you relied on.',
+      },
+      {
+        label: 'Review date',
+        name: 'reviewDate',
+        widget: 'datetime',
+        required: false,
+        date_format: 'YYYY-MM-DD',
+        time_format: false,
+        format: 'YYYY-MM-DD',
+      },
       {
         label: 'Alternatives',
         name: 'alternatives',
@@ -96,7 +125,13 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
   };
 
   return [
-    { label: 'Title', name: 'title', widget: 'string', hint: 'Clear and specific. 5–120 characters.', pattern: ['^.{5,120}$', 'Titles must be 5–120 characters'] },
+    {
+      label: 'Title',
+      name: 'title',
+      widget: 'string',
+      hint: 'Clear and specific. 5–120 characters.',
+      pattern: ['^.{5,120}$', 'Titles must be 5–120 characters'],
+    },
     {
       label: 'URL slug',
       name: 'slug',
@@ -131,7 +166,14 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
       ],
       hint: 'Nothing goes live until you click "Publish" (top right). To take an article down, choose Archived, save, then Publish.',
     },
-    { label: 'Feature on homepage', name: 'featured', widget: 'boolean', default: false, required: false, hint: 'The newest featured article becomes the homepage lead story.' },
+    {
+      label: 'Feature on homepage',
+      name: 'featured',
+      widget: 'boolean',
+      default: false,
+      required: false,
+      hint: 'The newest featured article becomes the homepage lead story.',
+    },
     {
       label: 'Publication date',
       name: 'publishDate',
@@ -152,7 +194,13 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
       format: 'YYYY-MM-DD',
       hint: 'Set this when you make a meaningful update after publication.',
     },
-    { label: 'Tags', name: 'tags', widget: 'list', required: false, hint: 'Comma-separated, lowercase, e.g. displays, buying advice. Topic pages appear for tags used by 2+ articles.' },
+    {
+      label: 'Tags',
+      name: 'tags',
+      widget: 'list',
+      required: false,
+      hint: 'Comma-separated, lowercase, e.g. displays, buying advice. Topic pages appear for tags used by 2+ articles.',
+    },
     {
       label: 'Featured image',
       name: 'image',
@@ -161,10 +209,29 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
       choose_url: false,
       hint: '16:9, at least 1600×900 px, JPG/PNG/WebP. If empty, a category illustration is used.',
     },
-    { label: 'Image alt text', name: 'imageAlt', widget: 'string', required: false, hint: 'Describe the image for people who cannot see it. Required if you add an image.' },
+    {
+      label: 'Image alt text',
+      name: 'imageAlt',
+      widget: 'string',
+      required: false,
+      hint: 'Describe the image for people who cannot see it. Required if you add an image.',
+    },
     { label: 'Image caption', name: 'imageCaption', widget: 'string', required: false },
-    { label: 'Image credit', name: 'imageCredit', widget: 'string', required: false, hint: 'e.g. "Illustration: TekkTech" or the photographer and licence.' },
-    { label: 'Image is AI-generated', name: 'imageIsAiGenerated', widget: 'boolean', default: false, required: false, hint: 'Adds an "AI-generated illustration" label under the image.' },
+    {
+      label: 'Image credit',
+      name: 'imageCredit',
+      widget: 'string',
+      required: false,
+      hint: 'e.g. "Illustration: TekkTech" or the photographer and licence.',
+    },
+    {
+      label: 'Image is AI-generated',
+      name: 'imageIsAiGenerated',
+      widget: 'boolean',
+      default: false,
+      required: false,
+      hint: 'Adds an "AI-generated illustration" label under the image.',
+    },
     {
       label: 'Body',
       name: 'body',
@@ -212,14 +279,62 @@ function articleFields(options: { type?: string; requireReview?: boolean }): Fie
         { label: 'Retailer', name: 'retailer', widget: 'string', required: false },
       ],
     },
-    { label: 'Show affiliate disclosure', name: 'affiliateDisclosure', widget: 'boolean', default: false, required: false, hint: 'Shown automatically when affiliate links are present; switch on to force it.' },
+    {
+      label: 'Show affiliate disclosure',
+      name: 'affiliateDisclosure',
+      widget: 'boolean',
+      default: false,
+      required: false,
+      hint: 'Shown automatically when affiliate links are present; switch on to force it.',
+    },
     { label: 'Sponsored content', name: 'sponsored', widget: 'boolean', default: false, required: false },
-    { label: 'Sponsor name', name: 'sponsorName', widget: 'string', required: false, hint: 'Required for sponsored content.' },
-    { label: 'SEO title', name: 'seoTitle', widget: 'string', required: false, pattern: ['^.{0,70}$', 'Keep SEO titles to 70 characters or fewer'], hint: 'Optional. Defaults to the title.' },
-    { label: 'SEO description', name: 'seoDescription', widget: 'text', required: false, pattern: ['^[\\s\\S]{0,170}$', 'Keep SEO descriptions to 170 characters or fewer'], hint: 'Optional. Defaults to the excerpt. Aim for 120–160 characters.' },
-    { label: 'Canonical URL', name: 'canonicalUrl', widget: 'string', required: false, pattern: ['^(https?://.*)?$', 'Must be a full URL starting with https://'], hint: 'Only if this article was first published elsewhere.' },
-    { label: 'Social sharing image', name: 'socialImage', widget: 'image', required: false, choose_url: false, hint: 'Optional. Defaults to the featured image (cropped to 1200×630).' },
-    { label: 'Demonstration content', name: 'demo', widget: 'boolean', default: false, required: false, hint: 'Marks placeholder articles. Demo articles show a warning banner and are hidden from search engines.' },
+    {
+      label: 'Sponsor name',
+      name: 'sponsorName',
+      widget: 'string',
+      required: false,
+      hint: 'Required for sponsored content.',
+    },
+    {
+      label: 'SEO title',
+      name: 'seoTitle',
+      widget: 'string',
+      required: false,
+      pattern: ['^.{0,70}$', 'Keep SEO titles to 70 characters or fewer'],
+      hint: 'Optional. Defaults to the title.',
+    },
+    {
+      label: 'SEO description',
+      name: 'seoDescription',
+      widget: 'text',
+      required: false,
+      pattern: ['^[\\s\\S]{0,170}$', 'Keep SEO descriptions to 170 characters or fewer'],
+      hint: 'Optional. Defaults to the excerpt. Aim for 120–160 characters.',
+    },
+    {
+      label: 'Canonical URL',
+      name: 'canonicalUrl',
+      widget: 'string',
+      required: false,
+      pattern: ['^(https?://.*)?$', 'Must be a full URL starting with https://'],
+      hint: 'Only if this article was first published elsewhere.',
+    },
+    {
+      label: 'Social sharing image',
+      name: 'socialImage',
+      widget: 'image',
+      required: false,
+      choose_url: false,
+      hint: 'Optional. Defaults to the featured image (cropped to 1200×630).',
+    },
+    {
+      label: 'Demonstration content',
+      name: 'demo',
+      widget: 'boolean',
+      default: false,
+      required: false,
+      hint: 'Marks placeholder articles. Demo articles show a warning banner and are hidden from search engines.',
+    },
   ];
 }
 
@@ -315,9 +430,29 @@ export function buildCmsConfig() {
         public_folder: MEDIA_FOLDER,
         fields: [
           { label: 'Title', name: 'title', widget: 'string' },
-          { label: 'Description', name: 'description', widget: 'text', hint: 'Used in search results and social previews. 20–170 characters.' },
-          { label: 'Last updated', name: 'updatedDate', widget: 'datetime', required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' },
-          { label: 'Needs legal review', name: 'requiresReview', widget: 'boolean', default: false, required: false, hint: 'Shows a "draft template" warning on the page. Switch off once reviewed.' },
+          {
+            label: 'Description',
+            name: 'description',
+            widget: 'text',
+            hint: 'Used in search results and social previews. 20–170 characters.',
+          },
+          {
+            label: 'Last updated',
+            name: 'updatedDate',
+            widget: 'datetime',
+            required: false,
+            date_format: 'YYYY-MM-DD',
+            time_format: false,
+            format: 'YYYY-MM-DD',
+          },
+          {
+            label: 'Needs legal review',
+            name: 'requiresReview',
+            widget: 'boolean',
+            default: false,
+            required: false,
+            hint: 'Shows a "draft template" warning on the page. Switch off once reviewed.',
+          },
           { label: 'Hide from search engines', name: 'noindex', widget: 'boolean', default: false, required: false },
           { label: 'Body', name: 'body', widget: 'markdown' },
         ],

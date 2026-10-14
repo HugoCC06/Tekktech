@@ -16,19 +16,17 @@ const isActive = (href: string) => current === href || current.startsWith(href);
 
     <nav class="site-nav" aria-label="Primary">
       <ul class="site-nav__list">
-        {
-          navigation.map((item) => (
-            <li>
-              <a
-                class="site-nav__link"
-                href={withBase(item.href)}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
+        {navigation.map((item) => (
+          <li>
+            <a
+              class="site-nav__link"
+              href={withBase(item.href)}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
 
@@ -36,7 +34,9 @@ const isActive = (href: string) => current === href || current.startsWith(href);
       <a class="search-trigger" href={withBase('/search/')} aria-label="Search articles">
         <Icon name="search" />
         <span class="search-trigger__text">Search</span>
-        <kbd class="search-trigger__kbd" aria-hidden="true">/</kbd>
+        <kbd class="search-trigger__kbd" aria-hidden="true">
+          /
+        </kbd>
       </a>
 
       <!-- A <details> menu works without JavaScript; the script below only adds polish. -->
@@ -47,16 +47,14 @@ const isActive = (href: string) => current === href || current.startsWith(href);
         </summary>
         <nav class="mobile-menu__panel" aria-label="Mobile">
           <ul>
-            {
-              navigation.map((item) => (
-                <li>
-                  <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
-                    {item.label}
-                    <Icon name="chevron-right" />
-                  </a>
-                </li>
-              ))
-            }
+            {navigation.map((item) => (
+              <li>
+                <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
+                  {item.label}
+                  <Icon name="chevron-right" />
+                </a>
+              </li>
+            ))}
             <li>
               <a href={withBase('/articles/')} aria-current={isActive('/articles/') ? 'page' : undefined}>
                 All articles

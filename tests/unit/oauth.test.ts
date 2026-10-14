@@ -29,7 +29,9 @@ function github(options: { login?: string; push?: boolean; tokenOk?: boolean } =
     const url = String(input);
     calls.push({ url, init });
     if (url === 'https://github.com/login/oauth/access_token') {
-      return tokenOk ? json({ access_token: 'gho_test_token', token_type: 'bearer' }) : json({ error: 'bad_verification_code' });
+      return tokenOk
+        ? json({ access_token: 'gho_test_token', token_type: 'bearer' })
+        : json({ error: 'bad_verification_code' });
     }
     if (url === 'https://api.github.com/user') return json({ login });
     if (url === 'https://api.github.com/repos/hugocc06/tekktech') return json({ permissions: { push } });
@@ -40,7 +42,10 @@ function github(options: { login?: string; push?: boolean; tokenOk?: boolean } =
 }
 
 async function startAuth(environment: OAuthEnv = env) {
-  return handleOAuthRequest(new Request(`${ORIGIN}/oauth/auth?provider=github&site_id=tekktech.com&scope=repo`), environment);
+  return handleOAuthRequest(
+    new Request(`${ORIGIN}/oauth/auth?provider=github&site_id=tekktech.com&scope=repo`),
+    environment,
+  );
 }
 
 function callback(query: string, cookie?: string) {
@@ -111,7 +116,11 @@ describe('/oauth/callback', () => {
 
   it('rejects a mismatched state', async () => {
     const { fetchMock } = github();
-    const response = await handleOAuthRequest(callback('code=abc&state=attacker', `${STATE_COOKIE}=expected`), env, fetchMock);
+    const response = await handleOAuthRequest(
+      callback('code=abc&state=attacker', `${STATE_COOKIE}=expected`),
+      env,
+      fetchMock,
+    );
     expect(response.status).toBe(403);
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -152,7 +161,9 @@ describe('/oauth/callback', () => {
     const html = await response.text();
     expect(html).toContain('authorization:github:error:');
     expect(html).not.toContain('gho_test_token');
-    expect(calls.some((call) => call.url.includes('/applications/client-id/token') && call.init?.method === 'DELETE')).toBe(true);
+    expect(
+      calls.some((call) => call.url.includes('/applications/client-id/token') && call.init?.method === 'DELETE'),
+    ).toBe(true);
   });
 
   it('refuses an allowed user without push access to the repository', async () => {

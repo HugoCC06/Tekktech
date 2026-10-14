@@ -14,17 +14,17 @@ const { title, id, description, link } = Astro.props;
 
 <div class="section-header">
   <div>
-    <h2 id={id} class="section-header__title">{title}</h2>
+    <h2 id={id} class="section-header__title">
+      {title}
+    </h2>
     {description && <p class="section-header__description">{description}</p>}
   </div>
-  {
-    link && (
-      <a class="text-link section-header__link" href={withBase(link.href)}>
-        {link.label}
-        <Icon name="arrow-right" class="icon section-header__icon" />
-      </a>
-    )
-  }
+  {link && (
+    <a class="text-link section-header__link" href={withBase(link.href)}>
+      {link.label}
+      <Icon name="arrow-right" class="icon section-header__icon" />
+    </a>
+  )}
 </div>
 
 <style>

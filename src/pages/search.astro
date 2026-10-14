@@ -11,11 +11,7 @@ import { categories } from '../site.config.ts';
 import { withBase } from '../lib/urls.ts';
 ---
 
-<BaseLayout
-  title="Search"
-  description="Search TekkTech reviews, comparisons, guides and explainers."
-  noindex
->
+<BaseLayout title="Search" description="Search TekkTech reviews, comparisons, guides and explainers." noindex>
   <div class="container container--narrow search-page">
     <Breadcrumbs
       items={[
@@ -30,7 +26,9 @@ import { withBase } from '../lib/urls.ts';
     </header>
 
     <form class="search-form" role="search" action={withBase('/search/')} method="get" data-search-form>
-      <label class="visually-hidden" for="search-input">Search articles</label>
+      <label class="visually-hidden" for="search-input">
+        Search articles
+      </label>
       <Icon name="search" class="icon search-form__icon" />
       <input
         id="search-input"
@@ -44,7 +42,9 @@ import { withBase } from '../lib/urls.ts';
         aria-describedby="search-status"
         data-search-input
       />
-      <button class="button search-form__submit" type="submit">Search</button>
+      <button class="button search-form__submit" type="submit">
+        Search
+      </button>
     </form>
 
     <p id="search-status" class="search-status" role="status" aria-live="polite" data-search-status></p>
@@ -61,15 +61,17 @@ import { withBase } from '../lib/urls.ts';
     <section class="search-browse" aria-labelledby="browse-title">
       <h2 id="browse-title">Browse by category</h2>
       <ul>
-        {
-          categories.map((category) => (
-            <li>
-              <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
-            </li>
-          ))
-        }
-        <li><a href={withBase('/reviews/')}>Reviews & buying advice</a></li>
-        <li><a href={withBase('/guides/')}>Guides & explainers</a></li>
+        {categories.map((category) => (
+          <li>
+            <a href={withBase(`/${category.slug}/`)}>{category.name}</a>
+          </li>
+        ))}
+        <li>
+          <a href={withBase('/reviews/')}>Reviews & buying advice</a>
+        </li>
+        <li>
+          <a href={withBase('/guides/')}>Guides & explainers</a>
+        </li>
       </ul>
     </section>
   </div>
@@ -156,7 +158,9 @@ import { withBase } from '../lib/urls.ts';
     // and adds only <mark> highlighting.
     list.innerHTML = results
       .map((result) => {
-        const meta = [result.meta.category, result.meta.type, result.meta.date].filter(Boolean).map((value) => escapeHtml(value!));
+        const meta = [result.meta.category, result.meta.type, result.meta.date]
+          .filter(Boolean)
+          .map((value) => escapeHtml(value!));
         return `<li class="search-result">
           <p class="search-result__meta">${meta.join('<span aria-hidden="true"> · </span>')}</p>
           <h2 class="search-result__title"><a href="${escapeHtml(result.url)}">${escapeHtml(result.meta.title ?? 'Untitled')}</a></h2>

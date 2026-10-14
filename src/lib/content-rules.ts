@@ -112,8 +112,7 @@ export function pickRelated<T extends RelatableArticle>(article: T, candidates: 
     })
     .filter(({ score }) => score > 0)
     .sort(
-      (a, b) =>
-        b.score - a.score || b.candidate.data.publishDate.getTime() - a.candidate.data.publishDate.getTime(),
+      (a, b) => b.score - a.score || b.candidate.data.publishDate.getTime() - a.candidate.data.publishDate.getTime(),
     )
     .map(({ candidate }) => candidate);
 

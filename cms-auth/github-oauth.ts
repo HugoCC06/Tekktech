@@ -94,7 +94,12 @@ function startAuthorization(url: URL, env: OAuthEnv): Response {
     return errorPage(url, env, 400, 'Unsupported sign-in provider.');
   }
   if (!isConfigured(env)) {
-    return errorPage(url, env, 500, 'Sign-in is not configured yet. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET on the server.');
+    return errorPage(
+      url,
+      env,
+      500,
+      'Sign-in is not configured yet. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET on the server.',
+    );
   }
   if (allowedUsers(env).size === 0) {
     return errorPage(url, env, 500, 'No users are allowed to sign in. Set ALLOWED_GITHUB_USERS on the server.');
@@ -127,14 +132,24 @@ async function completeAuthorization(request: Request, url: URL, env: OAuthEnv, 
 
   const githubError = url.searchParams.get('error');
   if (githubError) {
-    return errorPage(url, env, 400, githubError === 'access_denied' ? 'Sign-in was cancelled.' : 'GitHub returned an error during sign-in.');
+    return errorPage(
+      url,
+      env,
+      400,
+      githubError === 'access_denied' ? 'Sign-in was cancelled.' : 'GitHub returned an error during sign-in.',
+    );
   }
 
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
   const expectedState = readCookie(request.headers.get('Cookie'), STATE_COOKIE);
   if (!code || !state || !expectedState || !timingSafeEqual(state, expectedState)) {
-    return errorPage(url, env, 403, 'Sign-in could not be verified (invalid or expired state). Close this window and try again.');
+    return errorPage(
+      url,
+      env,
+      403,
+      'Sign-in could not be verified (invalid or expired state). Close this window and try again.',
+    );
   }
 
   let token: string;
@@ -311,7 +326,13 @@ function handshakePage(url: URL, env: OAuthEnv, status: number, message: string,
 
 function successPage(url: URL, env: OAuthEnv, token: string): Response {
   const message = `authorization:github:success:${JSON.stringify({ token, provider: 'github' })}`;
-  return handshakePage(url, env, 200, message, 'Signed in. You can close this window if it does not close automatically.');
+  return handshakePage(
+    url,
+    env,
+    200,
+    message,
+    'Signed in. You can close this window if it does not close automatically.',
+  );
 }
 
 function errorPage(url: URL, env: OAuthEnv, status: number, reason: string): Response {
