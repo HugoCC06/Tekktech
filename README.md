@@ -2,6 +2,8 @@
 
 TekkTech is an independent technology publication covering consumer tech, gaming hardware, crypto and blockchain, and productivity software. This repository contains the complete website, its private publishing dashboard, its content, and its tests.
 
+> **Quickest way to publish:** add a Markdown file on the GitHub website — see [docs/PUBLISHING-ON-GITHUB.md](docs/PUBLISHING-ON-GITHUB.md) and the copy-paste [article template](content-templates/NEW-ARTICLE.md). No dashboard or software needed.
+
 This README is the owner's guide. It assumes no web-development experience. More detailed guides live in [`docs/`](docs/):
 
 | Guide                                                      | What it covers                                                                             |
